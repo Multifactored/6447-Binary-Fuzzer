@@ -68,9 +68,9 @@ def checkJSON(sampleInput):
 # this will fuzz the binary with /dev/null for 200 times
 # if error found, will return True
 # all error messages (when process return value != 0) will be stored in ERRORDETAILS
-def devrandomfuzzer(pathToBinary):
+def urandomFuzzer(pathToBinary):
     for i in range(0,200):
-        command = "cat /dev/null | " + pathToBinary
+        command = "cat /dev/urandom | " + pathToBinary
         retval = subprocess.call(command,shell=True,stdout=open(os.devnull, 'wb'),stderr=open(ERRORDETAILS,'a+'))
         if retval != 0:
             return True
@@ -121,9 +121,9 @@ sampleInput.seek(0)
 # Then if this fails, move onto specialised fuzzes based on the sampleinput format
 # (could also try bit flipping)
 
-if devrandomfuzzer(sys.argv[1]):
-    print("Found a crash from /dev/random input .... saving to " + ERRORDETAILS)
-    
+if urandomFuzzer(sys.argv[1]):
+    print("Found a crash from /dev/urandom input .... saving to " + ERRORDETAILS)
+
 
 # We would want to loop the following code, repeating for each new mutated input
 mutatedInput = sampleInput.read()
