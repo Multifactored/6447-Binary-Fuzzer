@@ -20,6 +20,40 @@ def urandomFuzzer(pathToBinary):
             return True
     return False
 
+# check overflow by overflowing num of lines
+def checkBufferOverflowLines(sampleInput):
+    sampleInput.seek(0)
+    inputToBeSent = sampleInput.readline()
+    overflow = False
+    i = 1
+    print("Looking for buffer overflow...")
+    while True:
+        try:
+            p = process(sys.argv[1])
+            p.sendline((inputToBeSent * i).strip())
+            i += 1
+        except:
+            overflow = True
+            break
+
+    if overflow:
+        print("Found buffer overflow!")
+        res = open(INPUT_THAT_BREAKS,"w+")
+        res.write((inputToBeSent * i))
+        res.close()
+    return overflow
+
+# overflow the columns
+# aaa........,bbbb.........,cccc.....,ddd...................
+# def checkBufferOverflowColumns(sampleInput):
+#     p = process(sys.argv[1])
+#     return p.poll()
+
+
+def runCSVFuzzer():
+    checkBufferOverflowLines(sampleInput)
+    # checkBufferOverflowColumns(sampleInput)
+
 # First check the correct number of arguments are given.
 if len(sys.argv) != 3:
     # NEED TO MAKE SURE PROGRAM IS A PATH,NOT JUST THE BINARY NAME
@@ -74,40 +108,6 @@ if urandomFuzzer(sys.argv[1]):
 mutatedInput = sampleInput.read()
 
 # Run the program using pwntools, passing your mutated input as an argument.
-
-# check overflow by overflowing num of lines
-def checkBufferOverflowLines(sampleInput):
-    sampleInput.seek(0)
-    inputToBeSent = sampleInput.readline()
-    overflow = False
-    i = 1
-    print("Looking for buffer overflow...")
-    while True:
-        try:
-            p = process(sys.argv[1])
-            p.sendline((inputToBeSent * i).strip())
-            i += 1
-        except:
-            overflow = True
-            break
-
-    if overflow:
-        print("Found buffer overflow!")
-        res = open(INPUT_THAT_BREAKS,"w+")
-        res.write((inputToBeSent * i))
-        res.close()
-    return overflow
-
-# overflow the columns
-# aaa........,bbbb.........,cccc.....,ddd...................
-# def checkBufferOverflowColumns(sampleInput):
-#     p = process(sys.argv[1])
-#     return p.poll()
-
-
-def runCSVFuzzer():
-    checkBufferOverflowLines(sampleInput)
-    # checkBufferOverflowColumns(sampleInput)
 
 if isCSV:
     runCSVFuzzer()
