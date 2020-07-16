@@ -6,6 +6,8 @@ import os
 
 from type_checker import checkCSV, checkJSON
 
+# this is to silent pwntool logs
+context.log_level = 'error'
 
 # this will fuzz the binary with /dev/null for 200 times
 # if error found, will return True
@@ -32,7 +34,8 @@ except:
     sys.exit("Usage: ./fuzzer.py program sampleinput.txt")
 
 # file to store errors
-ERRORDETAILS = "bad.txt"
+ERRORDETAILS = "errors.txt"
+INPUT_THAT_BREAKS = "bad.txt"
 # Next we want to determine the format of the sample input's contents.
 
 # init flags
@@ -71,8 +74,43 @@ if urandomFuzzer(sys.argv[1]):
 mutatedInput = sampleInput.read()
 
 # Run the program using pwntools, passing your mutated input as an argument.
-# [matt] i think it would be faster to cat input to the binary instead of using pwntool (see devrandomfuzzer function),
-# might still need to use pwn to mutate the input
+
+# check overflow by overflowing num of lines
+def checkBufferOverflowLines(sampleInput):
+    sampleInput.seek(0)
+    inputToBeSent = sampleInput.readline()
+    overflow = False
+    i = 1
+    print("Looking for buffer overflow...")
+    while True:
+        try:
+            p = process(sys.argv[1])
+            p.sendline((inputToBeSent * i).strip())
+            i += 1
+        except:
+            overflow = True
+            break
+
+    if overflow:
+        print("Found buffer overflow!")
+        res = open(INPUT_THAT_BREAKS,"w+")
+        res.write((inputToBeSent * i))
+        res.close()
+    return overflow
+
+# overflow the columns
+# aaa........,bbbb.........,cccc.....,ddd...................
+# def checkBufferOverflowColumns(sampleInput):
+#     p = process(sys.argv[1])
+#     return p.poll()
+
+
+def runCSVFuzzer():
+    checkBufferOverflowLines(sampleInput)
+    # checkBufferOverflowColumns(sampleInput)
+
+if isCSV:
+    runCSVFuzzer()
 
 p = process(sys.argv[1])
 p.send(mutatedInput)
@@ -84,7 +122,7 @@ print("Current input is:\n{}".format(mutatedInput))
 # so I think we can use pwntools as the harness and check for the exit code)
 if False:
     print("Found bad input.")
-    result = open(ERRORDETAILS, "a+")
+    result = open(INPUT_THAT_BREAKS, "w+")
     result.writelines([mutatedInput])
     result.close()
     exit()
