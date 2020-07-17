@@ -25,7 +25,7 @@ def urandomFuzzer(pathToBinary):
     return False
 
 
-def checkBufferOverflowLines(sampleInput, binary):
+def checkBufferOverflowLines(sampleInput, badInput, binary):
     ''' check overflow by overflowing num of lines '''
     sampleInput.seek(0)
     inputToBeSent = sampleInput.readline()
@@ -44,7 +44,7 @@ def checkBufferOverflowLines(sampleInput, binary):
 
     if overflow:
         print("Found buffer overflow!")
-        res = open(INPUT_THAT_BREAKS,"w+")
+        res = open(badInput,"w+")
         res.write((inputToBeSent * i))
         res.close()
     return overflow
@@ -56,8 +56,8 @@ def checkBufferOverflowLines(sampleInput, binary):
 #     return p.poll()
 
 
-def runCSVFuzzer(sampleInput, binary):
-    checkBufferOverflowLines(sampleInput, binary)
+def runCSVFuzzer(sampleInput, badInput, binary):
+    checkBufferOverflowLines(sampleInput, mutatedInput, binary)
     # checkBufferOverflowColumns(sampleInput)
 
 
@@ -121,7 +121,7 @@ if __name__ == "__main__":
     # Run the program using pwntools, passing your mutated input as an argument.
 
     if isCSV:
-        runCSVFuzzer(sampleInput, binary)
+        runCSVFuzzer(sampleInput, INPUT_THAT_BREAKS, binary)
 
     p = process(binary)
     p.send(mutatedInput)
