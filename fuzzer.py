@@ -96,11 +96,11 @@ if __name__ == "__main__":
         isJSON = True
         print("Is a JSON file...")
 
-    # TODO: CHECK XML, not required for midpoint
-
     # Once this is complete, we also need to reset the file pointer to the
     # beginning of the file for future reading/writing.
     sampleInput.seek(0)
+
+    # TODO: CHECK XML, not required for midpoint
 
     # Initially try fuzzing the following:
     # repeat 100 (cat /dev/urandom | program)
