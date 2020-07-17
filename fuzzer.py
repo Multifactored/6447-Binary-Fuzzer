@@ -32,7 +32,7 @@ def checkBufferOverflowLines(sampleInput, badInput, binary):
     overflow = False
     i = 1
     print("Looking for buffer overflow...")
-    while True:
+    while True: # consider limiting this so it wouldn't go to 19234782349821734 lines
         try:
             p = process(binary)
             p.sendline((inputToBeSent * i).strip())
@@ -47,6 +47,7 @@ def checkBufferOverflowLines(sampleInput, badInput, binary):
         res = open(badInput,"w+")
         res.write((inputToBeSent * i))
         res.close()
+
     return overflow
 
 # overflow the columns
