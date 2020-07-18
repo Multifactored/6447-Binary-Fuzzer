@@ -1,3 +1,4 @@
+# pylint: disable=W0614
 import sys
 import json
 import random
@@ -10,8 +11,9 @@ def generateInt():
     return random.randint(1,99999999)
 
 
-def generatStr():
-    pass
+def generateStr():
+   choices = r"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890_+-={}|[]\:\";'<>?,./~`"
+   return ''.join(random.choice(choices) for i in range(random.randint(1,999)))
 
 
 def generateList():
@@ -33,7 +35,7 @@ def jsonRandomTyped(jsonInput: dict, key_set: list):
 
             elif type(val) == str:
                 # generate random string
-                pass
+                val = generateStr()
 
             elif type(val) == list:
                 # generate random list
@@ -48,7 +50,6 @@ def jsonRandomTyped(jsonInput: dict, key_set: list):
     return output
 
 def fuzzJSON(sampleInputFile, binary):
-    print("Fuzzing JSON ...")
     key_set = []
 
     jsonInput = sampleInputFile.read()
@@ -66,4 +67,4 @@ def fuzzJSON(sampleInputFile, binary):
 
 if __name__ == "__main__":
     # for testing
-    fuzzJSON(open("./binaries/json1.txt"),"./binaries/json1")
+    print(generateStr())
