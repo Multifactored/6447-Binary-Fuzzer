@@ -10,7 +10,7 @@ def generateInt():
     return random.randint(1,99999999)
 
 
-def generateStr():
+def generatStr():
     pass
 
 
@@ -48,6 +48,7 @@ def jsonRandomTyped(jsonInput: dict, key_set: list):
     return output
 
 def fuzzJSON(sampleInputFile, binary):
+    print("Fuzzing JSON ...")
     key_set = []
 
     jsonInput = sampleInputFile.read()
