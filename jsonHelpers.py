@@ -14,15 +14,15 @@ def generatStr():
 
 
 def generateList():
-    pass
+    return random.sample(range(0, 9999), random.randint(1,100))
 
 
 def jsonRandomTyped(jsonInput: dict, key_set: list):
     ''' Mutates values of each combination in the input to random values according to input value types '''
-    mutatedJson = {}
     output = []
 
     for subset in key_set:
+        mutatedJson = {}
         for key in subset:
             # find value type and generate random value according to that
             val = jsonInput[key]
@@ -36,7 +36,7 @@ def jsonRandomTyped(jsonInput: dict, key_set: list):
 
             elif type(val) == list:
                 # generate random list
-                pass
+                val = generateList()
 
             else:
                 sys.exit("Unexpected type:", type(val), val)
@@ -58,8 +58,6 @@ if __name__ == "__main__":
     for i in range(1, len(choices) + 1):
         for combs in combinations(choices, i):
             key_set.append(combs)
-
-    print(key_set)
 
     mutations = jsonRandomTyped(jsonInput, key_set)
 
