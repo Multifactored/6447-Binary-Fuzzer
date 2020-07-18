@@ -27,12 +27,15 @@ def jsonRandomTyped(jsonInput: dict, key_set: list):
             if type(jsonInput[key]) == int:
                 # generate random int
                 val = generateInt()
+
             elif type(jsonInput[key]) == str:
                 # generate random string
                 pass
+
             elif type(jsonInput[key]) == list:
                 # generate random list
                 pass
+
             else:
                 sys.exit("Unexpected type:", type(jsonInput[key]), jsonInput[key])
 
