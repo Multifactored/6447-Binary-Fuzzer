@@ -1,6 +1,7 @@
 import sys
 import json
 import random
+from helper import *
 
 from itertools import combinations
 
@@ -42,17 +43,16 @@ def jsonRandomTyped(jsonInput: dict, key_set: list):
                 sys.exit("Unexpected type:", type(val), val)
 
             mutatedJson[key] = val
-        
+
         output.append(mutatedJson)
     return output
 
-
-if __name__ == "__main__":
+def fuzzJSON(sampleInputFile, binary):
     key_set = []
 
-    jsonInput = open(sys.argv[1], "r").read()
+    jsonInput = sampleInputFile.read()
     jsonInput = json.loads(jsonInput)
-    
+
     choices = list(jsonInput.keys())
 
     for i in range(1, len(choices) + 1):
@@ -60,5 +60,9 @@ if __name__ == "__main__":
             key_set.append(combs)
 
     mutations = jsonRandomTyped(jsonInput, key_set)
+    for i in mutations:
+        sendInputAndCheck(binary,json.dumps(i),"Found vulnerability in JSON!")
 
-    print(mutations)
+if __name__ == "__main__":
+    # for testing
+    fuzzJSON(open("./binaries/json1.txt"),"./binaries/json1")

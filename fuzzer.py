@@ -4,6 +4,7 @@ import sys
 import subprocess
 import os
 from csvHelpers import *
+from jsonHelpers import *
 from type_checker import checkCSV, checkJSON
 
 # TODO: how do we stop 'core' file being created when vulnerability in binary found...
@@ -15,6 +16,8 @@ def runCSVFuzzer(sampleInput, binary):
     checkBufferOverflowLines(sampleInput, binary)
     checkBufferOverflowColumns(sampleInput, binary)
 
+def runJSONFuzzer(sampleInput, binary):
+    fuzzJSON(sampleInput, binary)
 
 if __name__ == "__main__":
 
@@ -66,5 +69,7 @@ if __name__ == "__main__":
     # input.
     if isCSV:
         runCSVFuzzer(sampleInput, binary)
+    if isJSON:
+        runJSONFuzzer(sampleInput,binary)
 
     print("No vulnerabilities found :(")
