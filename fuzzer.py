@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-from pwn import *   # pylint: disable=W0614
+# pylint: disable=W0614
+from pwn import *
 import sys
 import subprocess
 import os

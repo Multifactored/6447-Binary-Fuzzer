@@ -1,3 +1,4 @@
+# pylint: disable=W0614
 from helper import *
 
 # Attempts to overflow the number of lines of input passed into the binary
