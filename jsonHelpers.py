@@ -44,7 +44,7 @@ def jsonRandomTyped(jsonInput: dict, key_set: list):
             mutatedJson[key] = val
         
         output.append(mutatedJson)
-    return
+    return output
 
 
 if __name__ == "__main__":
