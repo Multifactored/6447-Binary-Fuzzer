@@ -23,7 +23,7 @@ def checkBufferOverflowColumns(sampleInputFile, binary):
     sampleInput = sampleInputFile.readline()
     columnValues = sampleInput.strip().split(",")
     modifiedValues = []
-    for i in range(0,len(columnValues)):
+    for _ in range(0,len(columnValues)):
         modifiedValues.append("z")
     # fuzz using the original values
     print("Fuzzing Columns with original input")
@@ -35,7 +35,7 @@ def checkBufferOverflowColumns(sampleInputFile, binary):
 # For example: aaa........,bbbb.........,cccc.....,ddd...................
 def fuzzColumns(binary,columnValues):
     columnValues = list(columnValues)
-    for i in range(1,1000):
+    for _ in range(1,1000):
         # increase length of each element per iteration
         columnValues = [e + "i" for e in columnValues]
         mutatedInput = ",".join(columnValues)
