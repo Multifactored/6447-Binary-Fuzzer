@@ -1,3 +1,4 @@
+# pylint: disable=W0614
 from pwn import *
 import os
 import sys
