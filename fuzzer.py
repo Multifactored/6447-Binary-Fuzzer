@@ -6,12 +6,10 @@ import os
 
 from type_checker import checkCSV, checkJSON
 
-# TODO: how do we stop 'core' file being created when vulnerability in binary found...
-
-# this is to silent pwntool logs
+# Silences the pwntool logs
 context.log_level = 'error'
 
-# file to store errors
+# File to store bad inputs
 BAD_INPUT_FILE = "bad.txt"
 
 # Fuzzes the binary with input from '/dev/urandom'
@@ -31,7 +29,7 @@ def urandomFuzzer(pathToBinary):
             res = open(BAD_INPUT_FILE, "w+")
             res.write(command)
             res.close()
-            exit()
+            sys.exit()
 
 # Flips random bits in the sample input and passes this into the binary
 def bitFlip(sampleInputFile, binary):
@@ -56,20 +54,24 @@ def bitFlip(sampleInputFile, binary):
 
         # Once we have flipped the bits, we want to decode this back into a string
         # that can be passed in as input to the binary
-        mutatedInput = b.decode('ascii').strip()
+        mutatedInput = b.decode('ascii')
         
         # We now send this mutated input into the binary
-        try:
-            p = process(binary)
-            p.sendline(mutatedInput)
-            p.close()
-        # If this input resulted in an error, we want to write it to 'bad.txt'
-        except:
+        p = process(binary)
+        p.sendline(mutatedInput)
+        p.proc.stdin.close()
+
+        # After it has finished running, we check the exit status of the process.
+        # If this input resulted in an error, we want to write it to 'bad.txt' and 
+        # exit the fuzzer
+        exit_status = p.poll(block=True)
+        p.close()
+        if exit_status != 0:
             print("Found vulnerability from bit flip!")
             res = open(BAD_INPUT_FILE, "w+")
             res.write(mutatedInput)
             res.close()
-            exit()
+            sys.exit()
 
 # Attempts to overflow the number of lines of input passed into the binary
 def checkBufferOverflowLines(sampleInputFile, binary):
@@ -80,19 +82,24 @@ def checkBufferOverflowLines(sampleInputFile, binary):
     sampleInputFile.seek(0)
     sampleInput = sampleInputFile.readline()
 
-    # We then attempt to overflow the number of lines in the input 10,000 times
-    for i in range(1, 10000):
+    # We then attempt to overflow the number of lines in the input 1000 times
+    for i in range(1, 1000):
 
         # We simply duplicate the first line of the file 'i' times in our sample
         # input
-        mutatedInput = (sampleInput * i).strip()
+        mutatedInput = (sampleInput * i)
         
         # We now send this mutated input into the binary
-        try:
-            p = process(binary)
-            p.sendline(mutatedInput)
-        # If this input resulted in an error, we want to write it to 'bad.txt'
-        except:
+        p = process(binary)
+        p.sendline(mutatedInput)
+        p.proc.stdin.close()
+
+        # After it has finished running, we check the exit status of the process.
+        # If this input resulted in an error, we want to write it to 'bad.txt' and 
+        # exit the fuzzer
+        exit_status = p.poll(block=True)
+        p.close()
+        if exit_status != 0:
             print("Found vulnerability from buffer overflow of lines!")
             res = open(BAD_INPUT_FILE, "w+")
             res.write(mutatedInput)
