@@ -6,141 +6,170 @@ import os
 
 from type_checker import checkCSV, checkJSON
 
-# this is to silent pwntool logs
+# Silences the pwntool logs
 context.log_level = 'error'
 
-# this will fuzz the binary with /dev/null for 200 times
-# if error found, will return True
-# all error messages (when process return value != 0) will be stored in ERRORDETAILS
+# File to store bad inputs
+BAD_INPUT_FILE = "bad.txt"
+
+# Fuzzes the binary with input from '/dev/urandom'
 def urandomFuzzer(pathToBinary):
+
+    print("Fuzzing the binary with '/dev/urandom'...")
+
+    # We pass in the output from /dev/urandom into the binary 200 times
     for _ in range(0,200):
         command = "cat /dev/urandom | " + pathToBinary
-        retval = subprocess.call(command,shell=True,stdout=open(os.devnull, 'wb'),stderr=open(ERRORDETAILS,'a+'))
+        retval = subprocess.call(command, shell=True, stdout=open(os.devnull, 'wb'))
+        
+        # If this input resulted in an error, we want to write it to 'bad.txt'
+        # TODO: this won't print the exact cat command used into bad.txt
         if retval != 0:
-            return True
-    return False
+            print("Found vulnerability from '/dev/urandom'!")
+            res = open(BAD_INPUT_FILE, "w+")
+            res.write(command)
+            res.close()
+            sys.exit()
 
-# check overflow by overflowing num of lines
-def checkBufferOverflowLines(sampleInput):
+# Flips random bits in the sample input and passes this into the binary
+def bitFlip(sampleInputFile, binary):
+
+    print("Flipping random bits in sample input...")
+
+    # First we have to read the file and store it as a string
+    sampleInputFile.seek(0)
+    sampleInput = sampleInputFile.read()
+    
+    # We then randomly flip bits in the sample input 1000 times
+    for _ in range(0, 1000):
+
+        # We first convert the sample input into a bytearray
+        b = bytearray(sampleInput, 'UTF-8')
+
+        # Then we search through the entire bytearray created, and randomly
+        # flip some of the bits
+        for i in range(0, len(b)):
+            if random.randint(0, 20) == 1:
+                b[i] ^= random.getrandbits(7)
+
+        # Once we have flipped the bits, we want to decode this back into a string
+        # that can be passed in as input to the binary
+        mutatedInput = b.decode('ascii')
+        
+        # We now send this mutated input into the binary
+        p = process(binary)
+        p.sendline(mutatedInput)
+        p.proc.stdin.close()
+
+        # After it has finished running, we check the exit status of the process.
+        # If this input resulted in an error, we want to write it to 'bad.txt' and 
+        # exit the fuzzer
+        exit_status = p.poll(block=True)
+        p.close()
+        if exit_status != 0:
+            print("Found vulnerability from bit flip!")
+            res = open(BAD_INPUT_FILE, "w+")
+            res.write(mutatedInput)
+            res.close()
+            sys.exit()
+
+# Attempts to overflow the number of lines of input passed into the binary
+def checkBufferOverflowLines(sampleInputFile, binary):
+
+    print("Looking for buffer overflow in number of lines...")
+    
+    # First we read the first line of the file and store it in a string
+    sampleInputFile.seek(0)
+    sampleInput = sampleInputFile.readline()
+
+    # We then attempt to overflow the number of lines in the input 1000 times
+    for i in range(1, 1000):
+
+        # We simply duplicate the first line of the file 'i' times in our sample
+        # input
+        mutatedInput = (sampleInput * i)
+        
+        # We now send this mutated input into the binary
+        p = process(binary)
+        p.sendline(mutatedInput)
+        p.proc.stdin.close()
+
+        # After it has finished running, we check the exit status of the process.
+        # If this input resulted in an error, we want to write it to 'bad.txt' and 
+        # exit the fuzzer
+        exit_status = p.poll(block=True)
+        p.close()
+        if exit_status != 0:
+            print("Found vulnerability from buffer overflow of lines!")
+            res = open(BAD_INPUT_FILE, "w+")
+            res.write(mutatedInput)
+            res.close()
+            exit()
+
+# TODO: implement function to overflow number of columns in input passed to binary
+# For example: aaa........,bbbb.........,cccc.....,ddd...................
+def checkBufferOverflowColumns(sampleInput, binary):
+
+    #print("Looking for buffer overflow in number of columns...")
+    
+    #p = process(binary)
+    #return p.poll()
+    return
+
+def runCSVFuzzer(sampleInput, binary):
+    checkBufferOverflowLines(sampleInput, binary)
+    checkBufferOverflowColumns(sampleInput, binary)
+
+
+if __name__ == "__main__":
+
+    # First check the correct number of arguments are given.
+    if len(sys.argv) != 3:
+        sys.exit("Usage: ./fuzzer.py program sampleinput.txt")
+
+    # We begin by opening the sample input file for reading, and extract the contents.
+    try:
+        sampleInput = open(sys.argv[2], 'r')
+    except:
+        print("Error:", sys.exc_info()[0])
+        sys.exit("Usage: ./fuzzer.py program sampleinput.txt")
+
+    # We also know the binary will be the first argument given.
+    binary = sys.argv[1]
+
+    # Next we want to determine the format of the sample input's contents.
+    isCSV = isJSON = isXML = False
+
+    # We first check if it is in csv format.
+    if checkCSV(sampleInput):
+        isCSV = True
+        print("Is a CSV file...")
+
+    # Once this is complete, we also need to reset the file pointer to the
+    # beginning of the file for future reading/writing.
     sampleInput.seek(0)
-    inputToBeSent = sampleInput.readline()
-    overflow = False
-    i = 1
-    print("Looking for buffer overflow...")
-    while True:
-        try:
-            p = process(sys.argv[1])
-            p.sendline((inputToBeSent * i).strip())
-            i += 1
-        except:
-            overflow = True
-            break
 
-    if overflow:
-        print("Found buffer overflow!")
-        res = open(INPUT_THAT_BREAKS,"w+")
-        res.write((inputToBeSent * i))
-        res.close()
-    return overflow
+    # Next we check if it is in json format.
+    if checkJSON(sampleInput):
+        isJSON = True
+        print("Is a JSON file...")
 
-# overflow the columns
-# aaa........,bbbb.........,cccc.....,ddd...................
-# def checkBufferOverflowColumns(sampleInput):
-#     p = process(sys.argv[1])
-#     return p.poll()
+    # Once this is complete, we also need to reset the file pointer to the
+    # beginning of the file for future reading/writing.
+    sampleInput.seek(0)
 
+    # TODO: Also check if XML format (however not requried for midpoint)
 
-def runCSVFuzzer():
-    checkBufferOverflowLines(sampleInput)
-    # checkBufferOverflowColumns(sampleInput)
+    # Now we can begin fuzzing the binary.
+    # To begin, we first fuzz the binary with input from '/dev/urandom'.
+    urandomFuzzer(binary)
 
-# First check the correct number of arguments are given.
-if len(sys.argv) != 3:
-    # NEED TO MAKE SURE PROGRAM IS A PATH,NOT JUST THE BINARY NAME
-    # ./csv1 instead of csv1
+    # Next, we can try bit flipping the sample input.
+    bitFlip(sampleInput, binary)
 
-    sys.exit("Usage: ./fuzzer.py program sampleinput.txt")
+    # If we determined the file is in CSV format, we can further fuzz the sample CSV
+    # input.
+    if isCSV:
+        runCSVFuzzer(sampleInput, binary)
 
-# We begin by opening the sample input file for reading, and extract the contents.
-try:
-    sampleInput = open(sys.argv[2], 'r')
-except:
-    sys.exit("Usage: ./fuzzer.py program sampleinput.txt")
-
-# file to store errors
-ERRORDETAILS = "errors.txt"
-INPUT_THAT_BREAKS = "bad.txt"
-# Next we want to determine the format of the sample input's contents.
-
-# init flags
-isCSV = isJSON = isXML = False
-
-# We first check if it is in csv format.
-if checkCSV(sampleInput):
-    isCSV = True
-    print("Is a CSV file...")
-
-# Once this is complete, we also need to reset the file pointer to the
-# beginning of the file for future reading/writing.
-sampleInput.seek(0)
-
-# Next we check if it is in json format.
-if checkJSON(sampleInput):
-    isJSON = True
-    print("Is a JSON file...")
-
-# TODO: CHECK XML, not required for midpoint
-
-# Once this is complete, we also need to reset the file pointer to the
-# beginning of the file for future reading/writing.
-sampleInput.seek(0)
-
-# Initially try fuzzing the following:
-# repeat 100 (cat /dev/urandom | program)
-# Then if this fails, move onto specialised fuzzes based on the sampleinput format
-# (could also try bit flipping)
-
-if urandomFuzzer(sys.argv[1]):
-    print("Found a crash from /dev/urandom input .... saving to " + ERRORDETAILS)
-
-
-# We would want to loop the following code, repeating for each new mutated input
-mutatedInput = sampleInput.read()
-
-# Run the program using pwntools, passing your mutated input as an argument.
-
-if isCSV:
-    runCSVFuzzer()
-
-p = process(sys.argv[1])
-p.send(mutatedInput)
-print("Current input is:\n{}".format(mutatedInput))
-
-# If we got a crash, write the bad input to bad.txt
-# TODO: we need a harness to check whether the program crashed...
-# (note how when running csv1 with json1.txt, it states it stopped with exit code 0,
-# so I think we can use pwntools as the harness and check for the exit code)
-if False:
-    print("Found bad input.")
-    result = open(INPUT_THAT_BREAKS, "w+")
-    result.writelines([mutatedInput])
-    result.close()
-    exit()
-
-p.close()
-
-'''
-# Example byteflip function
-def byteflip(input):
-    b = bytearray(json, 'UTF-8')
-
-    for i in range(0, len(b)):
-        if random.randint(0, 20) == 1:
-            b[i] ^= random.getrandbits(7)
-
-    return b.decode('ascii)
-
-# How to call the byte flip function
-for i in range(0, 100000):
-    yield byteflip(input)
-'''
+    print("No vulnerabilities found :(")
