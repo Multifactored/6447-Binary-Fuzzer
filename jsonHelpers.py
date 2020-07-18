@@ -10,7 +10,7 @@ def generateInt():
     return random.randint(1,99999999)
 
 
-def generatStr():
+def generateStr():
     pass
 
 
