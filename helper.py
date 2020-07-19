@@ -33,8 +33,8 @@ def bitFlip(sampleInputFile, binary):
     sampleInputFile.seek(0)
     sampleInput = sampleInputFile.read()
 
-    # We then randomly flip bits in the sample input 1000 times
-    for _ in range(0, 1000):
+    # We then randomly flip bits in the sample input 500 times
+    for _ in range(0, 500):
 
         # We first convert the sample input into a bytearray
         b = bytearray(sampleInput, 'UTF-8')
