@@ -11,8 +11,9 @@ Our fuzzer has 3 main features:
 what we can find
 
 **Planned Features**
-Currently, our bit-flipping takes up to a minute to run as we are running it 500 times, as we are iterating through the sample file and randomly flipping bits. What we would like to do in the future is to implement multi-threading to cut down on the time required to do this process.
-The above is also true for the JSON-specific function, as it generates a random value of the same type for every values of every key combination.
+- Currently, our bit-flipping takes up to a minute to run as we are running it 500 times, as we are iterating through the sample file and randomly flipping bits. What we would like to do in the future is to implement multi-threading to cut down on the time required to do this process.
+	- The above is also true for the JSON-specific function, as it generates a random value of the same type for every values of every key combination.
+- We want to implement a feature to fuzz binaries which take XML files as input, we expect this to be similar in functionality to the JSON-specific fuzzer
 
 ## **Bit-Flipping**
 Given a sample input to a binary, our bit-flip function will convert the sample input into a bytearray file and read over it while randomly xor'ing the bits with a random 7-bit integer in the file 500 times.
