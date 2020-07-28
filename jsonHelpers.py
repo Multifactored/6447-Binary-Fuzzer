@@ -12,7 +12,7 @@ def generateInt():
 
 
 def generateStr():
-   choices = r"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890_+-={}|[]\:\";'<>?,./~`"
+   choices = r"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!@#$%^&*()_+-={}|[]\:\";'<>?,./~`"
    return ''.join(random.choice(choices) for i in range(random.randint(1,999)))
 
 
