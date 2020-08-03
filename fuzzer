@@ -16,7 +16,7 @@ def runCSVFuzzer(sampleInput, binary):
     checkBufferOverflowColumns(sampleInput, binary)
 
 def runJSONFuzzer(sampleInput, binary):
-    fuzzJSONTyped(sampleInput, binary)
+    fuzzJSON(sampleInput, binary)
 
 if __name__ == "__main__":
 
@@ -69,6 +69,7 @@ if __name__ == "__main__":
     if isCSV:
         runCSVFuzzer(sampleInput, binary)
     if isJSON:
-        runJSONFuzzer(sampleInput,binary)
+        for _ in range(10):
+            runJSONFuzzer(sampleInput,binary)
 
     print("No vulnerabilities found :(")

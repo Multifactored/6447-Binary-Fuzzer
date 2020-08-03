@@ -49,7 +49,7 @@ def jsonRandomTyped(jsonInput: dict, key_set: list):
         output.append(mutatedJson)
     return output
 
-def fuzzJSONTyped(sampleInputFile, binary):
+def fuzzJSON(sampleInputFile, binary):
 
     print("Fuzzing the JSON formatted sample input...")
 
@@ -71,4 +71,5 @@ def fuzzJSONTyped(sampleInputFile, binary):
 
 if __name__ == "__main__":
     # for testing
-    print(generateStr())
+    print(fuzzJSONTyped(open("./binaries/json1.txt", "r"), "./binaries/json2"))
+    
