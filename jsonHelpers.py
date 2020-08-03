@@ -12,7 +12,7 @@ def generateInt():
 
 
 def generateStr():
-   choices = r"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!@#$%^&*()_+-={}|[]\:\";'<>?,./~`"
+   choices = r"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!@#$%^&*()_+-={}|[]\\:\";'<>?,./~`"
    return ''.join(random.choice(choices) for i in range(random.randint(1,999)))
 
 
@@ -49,7 +49,7 @@ def jsonRandomTyped(jsonInput: dict, key_set: list):
         output.append(mutatedJson)
     return output
 
-def fuzzJSON(sampleInputFile, binary):
+def fuzzJSONTyped(sampleInputFile, binary):
 
     print("Fuzzing the JSON formatted sample input...")
 

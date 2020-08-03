@@ -16,7 +16,7 @@ def runCSVFuzzer(sampleInput, binary):
     checkBufferOverflowColumns(sampleInput, binary)
 
 def runJSONFuzzer(sampleInput, binary):
-    fuzzJSON(sampleInput, binary)
+    fuzzJSONTyped(sampleInput, binary)
 
 if __name__ == "__main__":
 
