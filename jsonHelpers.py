@@ -71,5 +71,5 @@ def fuzzJSON(sampleInputFile, binary):
 
 if __name__ == "__main__":
     # for testing
-    print(fuzzJSONTyped(open("./binaries/json1.txt", "r"), "./binaries/json2"))
+    print(fuzzJSON(open("./binaries/json1.txt", "r"), "./binaries/json2"))
     
