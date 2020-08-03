@@ -53,7 +53,7 @@ if __name__ == "__main__":
         print("Is a JSON file...")
         for _ in range(10):
             runJSONFuzzer(sampleInput,binary)
-    else checkXML(sampleInput):
+    elif checkXML(sampleInput):
         print("Is a XML file...")
         runXMLFuzzer(sampleInput, binary)
 
