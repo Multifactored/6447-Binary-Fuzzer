@@ -1,5 +1,7 @@
 import csv
 import json
+import xml.dom.minidom as XML
+
 
 '''
 # NOTE: This passes for non-CSV files...
@@ -22,7 +24,7 @@ def checkCSV(sampleInput):
 # line, having more than 1 line and at least 1 comma.
 # Given the sample input file, determines if it has the same format as a CSV file.
 def checkCSV(sampleInput):
-
+    sampleInput.seek(0)
     # First we read the file and split each line.
     lines = sampleInput.readlines()
 
@@ -46,6 +48,7 @@ def checkCSV(sampleInput):
 
 # Given the sample input file, determines if it has the same format as a JSON file.
 def checkJSON(sampleInput):
+    sampleInput.seek(0)
     try:
         # First we need to read the file and store its contents in a variable.
         fileContents = sampleInput.read().strip()
@@ -57,6 +60,17 @@ def checkJSON(sampleInput):
     # If an exception is raised, then it is not valid json format.
     except:
         print("Not a JSON file...")
+        return False
+
+    return True
+
+# Given the sample input file, determines if it has the same format as a XML file.
+def checkXML(sampleInput):
+    sampleInput.seek(0)
+    try:
+        # Attempt to parse the file and see if it's XML
+        XML.parseString(sampleInput.read().strip())
+    except:
         return False
 
     return True

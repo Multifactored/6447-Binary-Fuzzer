@@ -6,7 +6,7 @@ import subprocess
 import os
 from csvHelpers import *
 from jsonHelpers import *
-from type_checker import checkCSV, checkJSON
+from type_checker import checkCSV, checkJSON, checkXML
 
 # this is to silent pwntool logs
 context.log_level = 'error'
@@ -17,6 +17,9 @@ def runCSVFuzzer(sampleInput, binary):
 
 def runJSONFuzzer(sampleInput, binary):
     fuzzJSON(sampleInput, binary)
+
+def runXMLFuzzer(sampleInput, binary):
+    pass
 
 if __name__ == "__main__":
 
@@ -34,25 +37,6 @@ if __name__ == "__main__":
     # We also know the binary will be the first argument given.
     binary = sys.argv[1]
 
-    # Next we want to determine the format of the sample input's contents.
-    isCSV = isJSON = isXML = False
-
-    # We first check if it is in csv format.
-    if checkCSV(sampleInput):
-        isCSV = True
-        print("Is a CSV file...")
-
-    # Once this is complete, we also need to reset the file pointer to the
-    # beginning of the file for future reading/writing.
-    sampleInput.seek(0)
-
-    # Next we check if it is in json format.
-    if checkJSON(sampleInput):
-        isJSON = True
-        print("Is a JSON file...")
-
-    # TODO: Also check if XML format (however not required for midpoint)
-
     # Now we can begin fuzzing the binary.
     # To begin, we first fuzz the binary with input from '/dev/urandom'.
     urandomFuzzer(binary)
@@ -60,16 +44,17 @@ if __name__ == "__main__":
     # Next, we can try bit flipping the sample input.
     bitFlip(sampleInput, binary)
 
-    # Once this is complete, we also need to reset the file pointer to the
-    # beginning of the file for future reading/writing.
-    sampleInput.seek(0)
-
-    # If we determined the file is in CSV format, we can further fuzz the sample CSV
-    # input.
-    if isCSV:
+    # We first check if it is in csv format.
+    if checkCSV(sampleInput):
+        print("Is a CSV file...")
         runCSVFuzzer(sampleInput, binary)
-    if isJSON:
+    # Next we check if it is in json format.
+    elif checkJSON(sampleInput):
+        print("Is a JSON file...")
         for _ in range(10):
             runJSONFuzzer(sampleInput,binary)
+    else checkXML(sampleInput):
+        print("Is a XML file...")
+        runXMLFuzzer(sampleInput, binary)
 
     print("No vulnerabilities found :(")
