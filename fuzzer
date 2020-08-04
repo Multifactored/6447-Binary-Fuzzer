@@ -6,6 +6,7 @@ import subprocess
 import os
 from csvHelpers import *
 from jsonHelpers import *
+from plaintextHelpers import *
 from type_checker import checkCSV, checkJSON, checkXML
 import concurrent.futures
 
@@ -14,13 +15,21 @@ def runCSVFuzzer(sampleInput, binary):
     checkBufferOverflowLines(sampleInput, binary)
     checkBufferOverflowColumns(sampleInput, binary)
 
+
 def runJSONFuzzer(sampleInput, binary):
     print("Is a JSON file...")
     fuzzJSON(sampleInput, binary)
 
+
 def runXMLFuzzer(sampleInput, binary):
     print("Is an XML file...")
     pass
+
+
+def runPlaintextFuzzer(sampleInput, binary):
+    print("Is a plaintext file...")
+    fuzzPlaintext(sampleInput, binary)
+
 
 if __name__ == "__main__":
 
@@ -50,6 +59,9 @@ if __name__ == "__main__":
         # Finally we see if it is in xml format.
         elif checkXML(sampleInput):
             executor.submit(runXMLFuzzer, sampleInput, binary)
+        # If it matched none of these file formats, then we treat it is plaintext.
+        else:
+            executor.submit(runPlaintextFuzzer, sampleInput, binary)
 
         # If we didn't find a vulnerability through format-specific fuzzing,
         # we can now do some generic fuzzing.
