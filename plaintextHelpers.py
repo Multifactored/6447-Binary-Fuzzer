@@ -41,7 +41,6 @@ def randInput(sampleCombs, sampleInput):
 
             output.append("\n".join(currWord) + "\n")
 
-    print(output)
     return output
 
 
@@ -50,7 +49,6 @@ def makeCombination(sampleChoices):
 
     for i in range(0, len(sampleChoices) + 1):
         for comb in combinations(sampleChoices, i):
-            print(comb)
             outputComb.append(comb)
 
     return outputComb
@@ -58,7 +56,6 @@ def makeCombination(sampleChoices):
 
 def fuzzPlaintext(sampleInput, binary):
     sampleChoices = [line.strip() for line in sampleInput]
-    print(sampleChoices)
     sampleCombs = makeCombination(sampleChoices)
 
     mutations = []
