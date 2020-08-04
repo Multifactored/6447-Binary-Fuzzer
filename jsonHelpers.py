@@ -9,8 +9,8 @@ def generateInt():
     return random.randint(1,99999999)
 
 def generateStr():
-   choices = r"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!@#$%^&*()_+-={}|[]\\:\";'<>?,./~`"
-   return ''.join(random.choice(choices) for i in range(random.randint(1,999)))
+    choices = r"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!@#$%^&*()_+-={}|[]\\:\";'<>?,./~`"
+    return ''.join(random.choice(choices) for i in range(random.randint(1,999)))
 
 def generateList():
     return random.sample(range(0, 9999), random.randint(1,100))
