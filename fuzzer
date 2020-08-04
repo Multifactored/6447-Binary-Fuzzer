@@ -7,9 +7,7 @@ import os
 from csvHelpers import *
 from jsonHelpers import *
 from type_checker import checkCSV, checkJSON, checkXML
-
-# this is to silent pwntool logs
-context.log_level = 'error'
+import concurrent.futures
 
 def runCSVFuzzer(sampleInput, binary):
     print("Is a CSV file...")
@@ -40,24 +38,26 @@ if __name__ == "__main__":
     # We also know the binary will be the first argument given.
     binary = sys.argv[1]
 
-    # Now we can begin fuzzing the binary.
-    # We first check if it is in csv format.
-    if checkCSV(sampleInput):
-        runCSVFuzzer(sampleInput, binary)
-    # Next we check if it is in json format.
-    elif checkJSON(sampleInput):
-        runJSONFuzzer(sampleInput,binary)
-    # Finally we see if it is in xml format.
-    elif checkXML(sampleInput):
-        runXMLFuzzer(sampleInput, binary)
+    with concurrent.futures.ThreadPoolExecutor(max_workers=5) as executor:
 
-    # If we didn't find a vulnerability through format-specific fuzzing,
-    # we can now do some generic fuzzing.
-    # So, we first fuzz the binary with input from '/dev/urandom'.
-    urandomFuzzer(binary)
+        # Now we can begin fuzzing the binary.
+        # We first check if it is in csv format.
+        if checkCSV(sampleInput):
+            executor.submit(runCSVFuzzer, sampleInput, binary)
+        # Next we check if it is in json format.
+        elif checkJSON(sampleInput):
+            executor.submit(runJSONFuzzer, sampleInput, binary)
+        # Finally we see if it is in xml format.
+        elif checkXML(sampleInput):
+            executor.submit(runXMLFuzzer, sampleInput, binary)
 
-    # And then we try bit flipping the sample input.
-    bitFlip(sampleInput, binary)
+        # If we didn't find a vulnerability through format-specific fuzzing,
+        # we can now do some generic fuzzing.
+        # So, we first fuzz the binary with input from '/dev/urandom'.
+        executor.submit(urandomFuzzer, binary)
+
+        # And then we try bit flipping the sample input.
+        executor.submit(bitFlip, sampleInput, binary)
 
     print("No vulnerabilities found :(")
 

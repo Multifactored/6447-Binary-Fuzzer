@@ -46,20 +46,23 @@ def bitFlip(sampleInputFile, binary):
 
 def sendInputAndCheck(binary,mutatedInput,description):
 
-        p = process(binary)
-        p.sendline(mutatedInput)
-        p.proc.stdin.close()
+    # this is to silence pwntool logs
+    context.log_level = 'error'
+
+    p = process(binary)
+    p.sendline(mutatedInput)
+    p.proc.stdin.close()
         
-        exit_status = p.poll(block=True)
-        p.close()
+    exit_status = p.poll(block=True)
+    p.close()
         
-        # After it has finished running, we check the exit status of the process.
-        # If this input resulted in an exit status less than 0 (and also didn't abort), 
-        # this means there was an exception, so we want to write it to 'bad.txt' 
-        # and exit the fuzzer.
-        if exit_status < 0 and exit_status != -6:
-            print(description)
-            res = open("bad.txt", "w+")
-            res.write(mutatedInput)
-            res.close()
-            exit()
+    # After it has finished running, we check the exit status of the process.
+    # If this input resulted in an exit status less than 0 (and also didn't abort), 
+    # this means there was an exception, so we want to write it to 'bad.txt' 
+    # and exit the fuzzer.
+    if exit_status < 0 and exit_status != -6:
+        print(description)
+        res = open("bad.txt", "w+")
+        res.write(mutatedInput)
+        res.close()
+        exit()
