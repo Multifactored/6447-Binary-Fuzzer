@@ -65,4 +65,4 @@ def sendInputAndCheck(binary,mutatedInput,description):
         res = open("bad.txt", "w+")
         res.write(mutatedInput)
         res.close()
-        exit()
+        os._exit(1)

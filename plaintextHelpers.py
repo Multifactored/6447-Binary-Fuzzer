@@ -55,6 +55,9 @@ def makeCombination(sampleChoices):
 
 
 def fuzzPlaintext(sampleInput, binary):
+
+    print("Attempting to fuzz the plaintext sample input...")
+
     sampleInput.seek(0)
     sampleChoices = [line.strip() for line in sampleInput]
     sampleCombs = makeCombination(sampleChoices)
