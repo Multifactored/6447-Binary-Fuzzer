@@ -4,25 +4,18 @@ import os
 import sys
 import subprocess
 
-BAD_INPUT_FILE = "bad.txt"
 # Fuzzes the binary with input from '/dev/urandom'
-def urandomFuzzer(pathToBinary):
+def urandomFuzzer(binary):
 
     print("Fuzzing the binary with '/dev/urandom'...")
 
-    # We pass in the output from /dev/urandom into the binary 200 times
-    for _ in range(0,200):
-        command = "cat /dev/urandom | " + pathToBinary
-        retval = subprocess.call(command, shell=True, stdout=open(os.devnull, 'wb'))
+    # We pass in the output from /dev/urandom into the binary 100 times
+    for _ in range(0,100):
 
-        # If this input resulted in an error, we want to write it to 'bad.txt'
-        # TODO: this won't print the exact cat command used into bad.txt
-        if retval != 0:
-            print("Found vulnerability from '/dev/urandom'!")
-            res = open(BAD_INPUT_FILE, "w+")
-            res.write(command)
-            res.close()
-            exit()
+        # To get this input, we use the bultin function 'urandom', which returns
+        # random bytes from an OS-specific randomness source.
+        mutatedInput = str(os.urandom(10000))
+        sendInputAndCheck(binary,mutatedInput,"Found vulnerability from '/dev/urandom'!")
 
 # Flips random bits in the sample input and passes this into the binary
 def bitFlip(sampleInputFile, binary):
@@ -51,19 +44,22 @@ def bitFlip(sampleInputFile, binary):
 
         sendInputAndCheck(binary,mutatedInput,"Found vulnerability from bit flip!")
 
-
 def sendInputAndCheck(binary,mutatedInput,description):
+
         p = process(binary)
         p.sendline(mutatedInput)
         p.proc.stdin.close()
-        # After it has finished running, we check the exit status of the process.
-        # If this input resulted in an error, we want to write it to 'bad.txt' and
-        # exit the fuzzer
+        
         exit_status = p.poll(block=True)
         p.close()
-        if exit_status != 0:
+        
+        # After it has finished running, we check the exit status of the process.
+        # If this input resulted in an exit status less than 0 (and also didn't abort), 
+        # this means there was an exception, so we want to write it to 'bad.txt' 
+        # and exit the fuzzer.
+        if exit_status < 0 and exit_status != -6:
             print(description)
-            res = open(BAD_INPUT_FILE, "w+")
+            res = open("bad.txt", "w+")
             res.write(mutatedInput)
             res.close()
             exit()

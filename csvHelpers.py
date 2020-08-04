@@ -8,11 +8,11 @@ def checkBufferOverflowLines(sampleInputFile, binary):
     sampleInputFile.seek(0)
     sampleInput = sampleInputFile.readline()
 
-    # We then attempt to overflow the number of lines in the input 10,000 times
-    for i in range(1, 10000):
-        # We simply duplicate the first line of the file 'i' times in our sample
+    # We then attempt to overflow the number of lines in the input 100 times
+    for i in range(1, 100):
+        # We simply duplicate the first line of the file i * 10 times in our sample
         # input
-        mutatedInput = (sampleInput * i)
+        mutatedInput = (sampleInput * i * 10)
         sendInputAndCheck(binary,mutatedInput,"Found vulnerability from buffer overflow of lines!")
     return
 
@@ -35,9 +35,9 @@ def checkBufferOverflowColumns(sampleInputFile, binary):
 # For example: aaa........,bbbb.........,cccc.....,ddd...................
 def fuzzColumns(binary,columnValues):
     columnValues = list(columnValues)
-    for _ in range(1,1000):
-        # increase length of each element per iteration
-        columnValues = [e + "i" for e in columnValues]
+    for _ in range(1,100):
+        # increase length of each element by 10 per iteration
+        columnValues = [e + "x" * 10 for e in columnValues]
         mutatedInput = ",".join(columnValues)
         sendInputAndCheck(binary,mutatedInput,"Found vulnerability from buffer overflow in columns!")
     return
