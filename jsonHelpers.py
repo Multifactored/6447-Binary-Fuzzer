@@ -55,6 +55,7 @@ def fuzzJSON(sampleInputFile, binary):
 
     key_set = []
 
+    sampleInputFile.seek(0)
     jsonInput = sampleInputFile.read()
     jsonInput = json.loads(jsonInput)
 
