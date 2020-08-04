@@ -9,6 +9,7 @@ from jsonHelpers import *
 from plaintextHelpers import *
 from type_checker import checkCSV, checkJSON, checkXML
 import concurrent.futures
+import multiprocessing
 
 def runCSVFuzzer(sampleInput, binary):
     print("Is a CSV file...")
@@ -47,7 +48,7 @@ if __name__ == "__main__":
     # We also know the binary will be the first argument given.
     binary = sys.argv[1]
 
-    with concurrent.futures.ThreadPoolExecutor(max_workers=5) as executor:
+    with concurrent.futures.ThreadPoolExecutor(max_workers=multiprocessing.cpu_count()) as executor:
 
         # Now we can begin fuzzing the binary.
         # We first check if it is in csv format.
@@ -59,7 +60,7 @@ if __name__ == "__main__":
         # Finally we see if it is in xml format.
         elif checkXML(sampleInput):
             executor.submit(runXMLFuzzer, sampleInput, binary)
-        # If it matched none of these file formats, then we treat it is plaintext.
+        # If it matched none of these file formats, then we treat it as plaintext.
         else:
             executor.submit(runPlaintextFuzzer, sampleInput, binary)
 
