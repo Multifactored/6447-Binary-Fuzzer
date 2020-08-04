@@ -12,13 +12,16 @@ from type_checker import checkCSV, checkJSON, checkXML
 context.log_level = 'error'
 
 def runCSVFuzzer(sampleInput, binary):
+    print("Is a CSV file...")
     checkBufferOverflowLines(sampleInput, binary)
     checkBufferOverflowColumns(sampleInput, binary)
 
 def runJSONFuzzer(sampleInput, binary):
+    print("Is a JSON file...")
     fuzzJSON(sampleInput, binary)
 
 def runXMLFuzzer(sampleInput, binary):
+    print("Is an XML file...")
     pass
 
 if __name__ == "__main__":
@@ -38,23 +41,24 @@ if __name__ == "__main__":
     binary = sys.argv[1]
 
     # Now we can begin fuzzing the binary.
-    # To begin, we first fuzz the binary with input from '/dev/urandom'.
-    urandomFuzzer(binary)
-
-    # Next, we can try bit flipping the sample input.
-    bitFlip(sampleInput, binary)
-
     # We first check if it is in csv format.
     if checkCSV(sampleInput):
-        print("Is a CSV file...")
         runCSVFuzzer(sampleInput, binary)
     # Next we check if it is in json format.
     elif checkJSON(sampleInput):
-        print("Is a JSON file...")
-        for _ in range(10):
-            runJSONFuzzer(sampleInput,binary)
+        runJSONFuzzer(sampleInput,binary)
+    # Finally we see if it is in xml format.
     elif checkXML(sampleInput):
-        print("Is a XML file...")
         runXMLFuzzer(sampleInput, binary)
 
+    # If we didn't find a vulnerability through format-specific fuzzing,
+    # we can now do some generic fuzzing.
+    # So, we first fuzz the binary with input from '/dev/urandom'.
+    urandomFuzzer(binary)
+
+    # And then we try bit flipping the sample input.
+    bitFlip(sampleInput, binary)
+
     print("No vulnerabilities found :(")
+
+# TODO: json2, plaintext2, xml1, xml2, xml3

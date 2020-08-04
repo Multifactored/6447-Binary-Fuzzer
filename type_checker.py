@@ -71,6 +71,7 @@ def checkXML(sampleInput):
         # Attempt to parse the file and see if it's XML
         XML.parseString(sampleInput.read().strip())
     except:
+        print("Not an XML file...")
         return False
 
     return True
