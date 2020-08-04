@@ -55,6 +55,7 @@ def makeCombination(sampleChoices):
 
 
 def fuzzPlaintext(sampleInput, binary):
+    sampleInput.seek(0)
     sampleChoices = [line.strip() for line in sampleInput]
     sampleCombs = makeCombination(sampleChoices)
 
@@ -63,6 +64,7 @@ def fuzzPlaintext(sampleInput, binary):
     mutations = randInput(sampleCombs, sampleChoices)
     for i in mutations:
         sendInputAndCheck(binary, i, "Found vulnerability in plaintext!")
+    print(mutations)
 
 
 if __name__ == "__main__":
