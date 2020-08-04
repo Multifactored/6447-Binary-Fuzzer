@@ -12,23 +12,23 @@ import concurrent.futures
 import multiprocessing
 
 def runCSVFuzzer(sampleInput, binary):
-    print("Is a CSV file...")
+    print("Is a CSV file...\n", end="")
     checkBufferOverflowLines(sampleInput, binary)
     checkBufferOverflowColumns(sampleInput, binary)
 
 
 def runJSONFuzzer(sampleInput, binary):
-    print("Is a JSON file...")
+    print("Is a JSON file...\n", end="")
     fuzzJSON(sampleInput, binary)
 
 
 def runXMLFuzzer(sampleInput, binary):
-    print("Is an XML file...")
+    print("Is an XML file...\n", end="")
     pass
 
 
 def runPlaintextFuzzer(sampleInput, binary):
-    print("Is a plaintext file...")
+    print("Is a plaintext file...\n", end="")
     fuzzPlaintext(sampleInput, binary)
 
 
@@ -72,6 +72,6 @@ if __name__ == "__main__":
         # And then we try bit flipping the sample input.
         executor.submit(bitFlip, sampleInput, binary)
 
-    print("No vulnerabilities found :(")
+    print("No vulnerabilities found :(\n", end="")
 
 # TODO: json2, plaintext2, xml1, xml2, xml3

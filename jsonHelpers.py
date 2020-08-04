@@ -46,7 +46,7 @@ def jsonRandomTyped(jsonInput: dict, key_set: list):
 
 def fuzzJSON(sampleInputFile, binary):
 
-    print("Fuzzing the JSON formatted sample input...")
+    print("Fuzzing the JSON formatted sample input...\n", end="")
 
     for _ in range(2):
         key_set = []

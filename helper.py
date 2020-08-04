@@ -7,7 +7,7 @@ import subprocess
 # Fuzzes the binary with input from '/dev/urandom'
 def urandomFuzzer(binary):
 
-    print("Fuzzing the binary with '/dev/urandom'...")
+    print("Fuzzing the binary with '/dev/urandom'...\n", end="")
 
     # We pass in the output from /dev/urandom into the binary 100 times
     for _ in range(0,100):
@@ -20,7 +20,7 @@ def urandomFuzzer(binary):
 # Flips random bits in the sample input and passes this into the binary
 def bitFlip(sampleInputFile, binary):
 
-    print("Flipping random bits in sample input...")
+    print("Flipping random bits in sample input...\n", end="")
 
     # First we have to read the file and store it as a string
     sampleInputFile.seek(0)

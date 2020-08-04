@@ -3,7 +3,7 @@ from helper import *
 
 # Attempts to overflow the number of lines of input passed into the binary
 def checkBufferOverflowLines(sampleInputFile, binary):
-    print("Looking for buffer overflow in number of lines...")
+    print("Looking for buffer overflow in number of lines...\n", end="")
     # First we read the first line of the file and store it in a string
     sampleInputFile.seek(0)
     sampleInput = sampleInputFile.readline()
@@ -17,7 +17,7 @@ def checkBufferOverflowLines(sampleInputFile, binary):
     return
 
 def checkBufferOverflowColumns(sampleInputFile, binary):
-    print("Looking for buffer overflow in the columns...")
+    print("Looking for buffer overflow in the columns...\n", end="")
     # First we read the first line of the file and store it in a string
     sampleInputFile.seek(0)
     sampleInput = sampleInputFile.readline()
@@ -26,10 +26,10 @@ def checkBufferOverflowColumns(sampleInputFile, binary):
     for _ in range(0,len(columnValues)):
         modifiedValues.append("z")
     # fuzz using the original values
-    print("Fuzzing Columns with original input")
+    print("Fuzzing Columns with original input\n", end="")
     fuzzColumns(binary,columnValues)
     # fuzz using modified columnValues
-    print("Fuzzing Columns with modified input values")
+    print("Fuzzing Columns with modified input values\n", end="")
     fuzzColumns(binary,modifiedValues)
 
 # For example: aaa........,bbbb.........,cccc.....,ddd...................
