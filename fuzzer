@@ -6,6 +6,7 @@ import subprocess
 import os
 from csvHelpers import *
 from jsonHelpers import *
+from plaintextHelpers import *
 from type_checker import checkCSV, checkJSON, checkXML
 
 # this is to silent pwntool logs
@@ -15,11 +16,18 @@ def runCSVFuzzer(sampleInput, binary):
     checkBufferOverflowLines(sampleInput, binary)
     checkBufferOverflowColumns(sampleInput, binary)
 
+
 def runJSONFuzzer(sampleInput, binary):
     fuzzJSON(sampleInput, binary)
 
+
 def runXMLFuzzer(sampleInput, binary):
     pass
+
+
+def runPlaintextFuzzer(sampleInput, binary):
+    fuzzPlaintext(sampleInput, binary)
+
 
 if __name__ == "__main__":
 
@@ -56,5 +64,8 @@ if __name__ == "__main__":
     elif checkXML(sampleInput):
         print("Is a XML file...")
         runXMLFuzzer(sampleInput, binary)
+    else:
+        print("Is a plaintext file...")
+        runPlaintextFuzzer(sampleInput, binary)
 
     print("No vulnerabilities found :(")
