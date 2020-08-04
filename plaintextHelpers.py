@@ -7,9 +7,10 @@ from helper import *
 from itertools import combinations
 
 
-def generateStr():
+def generateStr(maxPower):
     choices = r"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!@#$%^&*()_+-={}|[]\\:\";'<>?,./~`"
-    return ''.join(random.choice(choices) for i in range(random.randint(1,999)))
+    maxPower = 2 ** maxPower
+    return ''.join(random.choice(choices) for i in range(maxPower))
 
 
 def randInput(sampleCombs, sampleInput):
@@ -18,28 +19,32 @@ def randInput(sampleCombs, sampleInput):
     i.e.
     sample = ["first", "second"]
     output = [({random_str}, {random_str}) ("first", {random_str}), ({random_str}, "second"), ("first", "second")]
+    
+    The set of outputs will be generated 14 times, each time the abovementioned {random_str} is generated,
+    it will increase in length exponentially, from 2^0 to 2^14 in length.
     '''
     output = []
 
-    for currComb in sampleCombs:
-        index = 0
-        while index < len(sampleInput):
-            currWord = []
-            indexComb = 0
+    for i in range(15):
+        for currComb in sampleCombs:
+            index = 0
             while index < len(sampleInput):
-                if indexComb >= len(currComb):
-                    currWord.append(generateStr())
-                elif sampleInput[index] != currComb[indexComb]:
-                    currWord.append(generateStr())
+                currWord = []
+                indexComb = 0
+                while index < len(sampleInput):
+                    if indexComb >= len(currComb):
+                        currWord.append(generateStr(i))
+                    elif sampleInput[index] != currComb[indexComb]:
+                        currWord.append(generateStr(i))
+                        index += 1
+                        continue
+                    else:
+                        currWord.append(sampleInput[index])
+
                     index += 1
-                    continue
-                else:
-                    currWord.append(sampleInput[index])
+                    indexComb += 1
 
-                index += 1
-                indexComb += 1
-
-            output.append("\n".join(currWord) + "\n")
+                output.append("\n".join(currWord) + "\n")
 
     return output
 
