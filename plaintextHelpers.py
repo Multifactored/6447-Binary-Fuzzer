@@ -7,12 +7,6 @@ from helper import *
 from itertools import combinations
 
 
-def generateStr(maxPower):
-    choices = r"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!@#$%^&*()_+-={}|[]\\:\";'<>?,./~`"
-    maxPower = 2 ** maxPower
-    return ''.join(random.choice(choices) for i in range(maxPower))
-
-
 def randInput(sampleCombs, sampleInput):
     '''
     For each combination, create a random string for the lines left out
@@ -49,6 +43,13 @@ def randInput(sampleCombs, sampleInput):
     return output
 
 
+def typedInput(sampleCombs, sampleInput):
+    ''' Mutates input, according to its type, ie int gets mutated to another int, str to str, etc. '''
+    
+    for currComb in sampleCombs:
+        pass
+
+
 def makeCombination(sampleChoices):
     outputComb = []
 
@@ -76,4 +77,4 @@ def fuzzPlaintext(sampleInput, binary):
 
 if __name__ == "__main__":
     sampleInput = open("./binaries/plaintextTest.txt", "r")
-    fuzzPlaintext(sampleInput, "./binaries/plaintext2")
+    fuzzPlaintext(sampleInput, "./binaries/plaintext1")
