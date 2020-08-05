@@ -91,8 +91,13 @@ def valTypeCheck(val, i):
         val = generateInt()
 
     elif type(val) == str:
-        # generate random string
-        val = generateStr(i)
+        # account for the case where something like "1" is passed in
+        try:
+            val = int(val)
+            val = generateInt()
+        except ValueError:
+            # generate random string
+            val = generateStr(i)
 
     elif type(val) == list:
         # generate random list
