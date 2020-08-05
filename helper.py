@@ -94,7 +94,7 @@ def valGenerateTyped(val, i):
         # account for the case where something like "1" is passed in
         try:
             val = int(val)
-            val = generateInt()
+            val = str(generateInt())
         except ValueError:
             # generate random string
             val = generateStr(i)
