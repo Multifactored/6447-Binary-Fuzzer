@@ -17,6 +17,7 @@ def urandomFuzzer(binary):
         mutatedInput = str(os.urandom(10000))
         sendInputAndCheck(binary,mutatedInput,"Found vulnerability from '/dev/urandom'!")
 
+
 # Flips random bits in the sample input and passes this into the binary
 def bitFlip(sampleInputFile, binary):
 
@@ -44,6 +45,7 @@ def bitFlip(sampleInputFile, binary):
 
         sendInputAndCheck(binary,mutatedInput,"Found vulnerability from bit flip!")
 
+
 def sendInputAndCheck(binary,mutatedInput,description):
 
     # this is to silence pwntool logs
@@ -66,3 +68,37 @@ def sendInputAndCheck(binary,mutatedInput,description):
         res.write(mutatedInput)
         res.close()
         os._exit(1)
+
+
+def generateInt():
+    return random.randint(-99999999,99999999)
+
+
+def generateStr(maxPower):
+    choices = r"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!@#$%^&*()_+-={}|[]\\:\";'<>?,./~`"
+    maxPower = 2 ** maxPower
+    return ''.join(random.choice(choices) for i in range(maxPower))
+
+
+def generateList():
+    return random.sample(range(0, 9999), random.randint(1,100))
+
+
+def valTypeCheck(val, i):
+    # find value type and generate random value according to that
+    if type(val) == int:
+        # generate random int
+        val = generateInt()
+
+    elif type(val) == str:
+        # generate random string
+        val = generateStr(i)
+
+    elif type(val) == list:
+        # generate random list
+        val = generateList()
+
+    else:
+        sys.exit("Unexpected type:", type(val), val)
+    
+    return val
