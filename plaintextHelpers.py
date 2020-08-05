@@ -22,7 +22,7 @@ def randInput(sampleCombs, sampleInput):
     for i in range(15):
         for currComb in sampleCombs:
             index = 0
-            while index < len(sampleInput):
+            while index < len(sampleInput) - 1:
                 currWord = []
                 indexComb = 0
                 while index < len(sampleInput):
@@ -30,24 +30,43 @@ def randInput(sampleCombs, sampleInput):
                         currWord.append(generateStr(i))
                     elif sampleInput[index] != currComb[indexComb]:
                         currWord.append(generateStr(i))
-                        index += 1
-                        continue
                     else:
                         currWord.append(sampleInput[index])
+                        indexComb += 1
 
                     index += 1
-                    indexComb += 1
-
                 output.append("\n".join(currWord) + "\n")
 
+    # delete every 4th, duplicate of sample input
+    del output[3::4]
     return output
 
 
 def typedInput(sampleCombs, sampleInput):
     ''' Mutates input, according to its type, ie int gets mutated to another int, str to str, etc. '''
-    
-    for currComb in sampleCombs:
-        pass
+    output = []
+
+    for i in range(15):
+        for currComb in sampleCombs:
+            index = 0
+
+            while index < len(sampleInput):
+                currWord = []
+                indexComb = 0
+                while index < len(sampleInput):
+                    if indexComb >= len(currComb):
+                        currWord.append(sampleInput[index])
+                    elif sampleInput[index] != currComb[indexComb]:
+                        currWord.append(sampleInput[index])
+                    else:
+                        currWord.append(valGenerateTyped(sampleInput[index], i))
+                        indexComb += 1
+
+                    index += 1
+
+                output.append("\n".join(currWord) + "\n")
+
+    return output
 
 
 def makeCombination(sampleChoices):
@@ -70,11 +89,18 @@ def fuzzPlaintext(sampleInput, binary):
 
     mutations = []
 
+    print("Attempting random plaintext fuzzing")
     mutations = randInput(sampleCombs, sampleChoices)
+    for i in mutations:
+        sendInputAndCheck(binary, i, "Found vulnerability in plaintext!")
+    
+    print("Attempting random-typed plaintext fuzzing")
+    mutations = typedInput(sampleCombs, sampleChoices)
     for i in mutations:
         sendInputAndCheck(binary, i, "Found vulnerability in plaintext!")
 
 
 if __name__ == "__main__":
-    sampleInput = open("./binaries/plaintextTest.txt", "r")
-    fuzzPlaintext(sampleInput, "./binaries/plaintext1")
+    sampleInput = open("./binaries/plaintext2.txt", "r")
+    sampleInput.seek(0)
+    fuzzPlaintext(sampleInput, "./binaries/plaintext2")
