@@ -84,7 +84,7 @@ def generateList():
     return random.sample(range(0, 9999), random.randint(1,100))
 
 
-def valTypeCheck(val, i):
+def valGenerateTyped(val, i):
     # find value type and generate random value according to that
     if type(val) == int:
         # generate random int
@@ -105,5 +105,5 @@ def valTypeCheck(val, i):
 
     else:
         sys.exit("Unexpected type:", type(val), val)
-    
+
     return val

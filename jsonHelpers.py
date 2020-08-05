@@ -16,7 +16,7 @@ def jsonRandomTyped(jsonInput: dict, key_set: list):
             for key in subset:
                 # find value type and generate random value according to that
                 val = jsonInput[key]
-                val = valTypeCheck(val, i + 1)
+                val = valGenerateTyped(val, i + 1)
 
                 mutatedJson[key] = val
 
