@@ -10,13 +10,13 @@ def jsonRandomTyped(jsonInput: dict, key_set: list):
     ''' Mutates values of each combination in the input to random values according to input value types '''
     output = []
 
-    for i in range(14):
+    for i in range(10):
         for subset in key_set:
             mutatedJson = jsonInput
             for key in subset:
                 # find value type and generate random value according to that
                 val = jsonInput[key]
-                val = valTypeCheck(val, i)
+                val = valTypeCheck(val, i + 1)
 
                 mutatedJson[key] = val
 
@@ -35,13 +35,15 @@ def fuzzJSON(sampleInputFile, binary):
 
     choices = list(jsonInput.keys())
 
-    for i in range(1, len(choices) + 1):
-        for combs in combinations(choices, i):
-            key_set.append(combs)
+    # attempt to fuzz 8 times
+    for _ in range(8):
+        for i in range(1, len(choices) + 1):
+            for combs in combinations(choices, i):
+                key_set.append(combs)
 
-    mutations = jsonRandomTyped(jsonInput, key_set)
-    for i in mutations:
-        sendInputAndCheck(binary,json.dumps(i),"Found vulnerability in JSON!")
+        mutations = jsonRandomTyped(jsonInput, key_set)
+        for i in mutations:
+            sendInputAndCheck(binary,json.dumps(i),"Found vulnerability in JSON!")
 
 if __name__ == "__main__":
     # for testing
