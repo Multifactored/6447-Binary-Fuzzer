@@ -6,7 +6,7 @@ from helper import *
 from itertools import combinations
 
 def generateInt():
-    return random.randint(1,99999999)
+    return random.randint(-99999999,99999999)
 
 def generateStr():
     choices = r"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!@#$%^&*()_+-={}|[]\\:\";'<>?,./~`"
@@ -48,24 +48,23 @@ def fuzzJSON(sampleInputFile, binary):
 
     print("Fuzzing the JSON formatted sample input...\n", end="")
 
-    for _ in range(2):
-        key_set = []
+    key_set = []
 
-        sampleInputFile.seek(0)
-        jsonInput = sampleInputFile.read()
-        jsonInput = json.loads(jsonInput)
+    sampleInputFile.seek(0)
+    jsonInput = sampleInputFile.read()
+    jsonInput = json.loads(jsonInput)
 
-        choices = list(jsonInput.keys())
+    choices = list(jsonInput.keys())
 
-        for i in range(1, len(choices) + 1):
-            for combs in combinations(choices, i):
-                key_set.append(combs)
+    for i in range(1, len(choices) + 1):
+        for combs in combinations(choices, i):
+            key_set.append(combs)
 
-        mutations = jsonRandomTyped(jsonInput, key_set)
-        for i in mutations:
-            sendInputAndCheck(binary,json.dumps(i),"Found vulnerability in JSON!")
+    mutations = jsonRandomTyped(jsonInput, key_set)
+    for i in mutations:
+        sendInputAndCheck(binary,json.dumps(i),"Found vulnerability in JSON!")
 
 if __name__ == "__main__":
     # for testing
-    print(fuzzJSON(open("./binaries/json1.txt", "r"), "./binaries/json2"))
+    print(fuzzJSON(open("./binaries/json1.txt", "r"), "./binaries/json1"))
     
