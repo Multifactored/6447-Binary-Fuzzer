@@ -2,7 +2,7 @@
 from helper import *
 
 # Attempts to overflow the number of lines of input passed into the binary
-def checkBufferOverflowLines(sampleInputFile, binary):
+def checkBufferOverflowLines(sampleInputFile, binary,lock):
     print("Looking for buffer overflow in number of lines...\n", end="")
     # First we read the first line of the file and store it in a string
     sampleInputFile.seek(0)
@@ -13,10 +13,12 @@ def checkBufferOverflowLines(sampleInputFile, binary):
         # We simply duplicate the first line of the file i * 10 times in our sample
         # input
         mutatedInput = (sampleInput * i * 10)
-        sendInputAndCheck(binary, mutatedInput, "Found vulnerability from buffer overflow of lines!")
-    return
+        if sendInputAndCheck(binary,mutatedInput,lock):
+            return True , "Found vulnerability from buffer overflow of lines!"
+    return False
 
-def checkBufferOverflowColumns(sampleInputFile, binary):
+
+def checkBufferOverflowColumns(sampleInputFile, binary,lock):
     print("Looking for buffer overflow in the columns...\n", end="")
     # First we read the first line of the file and store it in a string
     sampleInputFile.seek(0)
@@ -27,17 +29,18 @@ def checkBufferOverflowColumns(sampleInputFile, binary):
         modifiedValues.append("z")
     # fuzz using the original values
     print("Fuzzing Columns with original input\n", end="")
-    fuzzColumns(binary, columnValues)
+    fuzzColumns(binary,columnValues,lock)
     # fuzz using modified columnValues
     print("Fuzzing Columns with modified input values\n", end="")
-    fuzzColumns(binary, modifiedValues)
+    fuzzColumns(binary,modifiedValues,lock)
 
 # For example: aaa........,bbbb.........,cccc.....,ddd...................
-def fuzzColumns(binary, columnValues):
+def fuzzColumns(binary,columnValues,lock):
     columnValues = list(columnValues)
     for _ in range(1, 100):
         # increase length of each element by 10 per iteration
         columnValues = [e + "x" * 10 for e in columnValues]
         mutatedInput = ",".join(columnValues)
-        sendInputAndCheck(binary, mutatedInput, "Found vulnerability from buffer overflow in columns!")
-    return
+        if sendInputAndCheck(binary,mutatedInput,lock):
+            return True , "Found vulnerability from buffer overflow in columns!"
+    return False

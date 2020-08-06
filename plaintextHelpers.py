@@ -79,7 +79,7 @@ def makeCombination(sampleChoices):
     return outputComb
 
 
-def fuzzPlaintext(sampleInput, binary):
+def fuzzPlaintext(sampleInput, binary,lock):
 
     print("Attempting to fuzz the plaintext sample input...\n", end="")
 
@@ -92,13 +92,15 @@ def fuzzPlaintext(sampleInput, binary):
     print("Attempting random plaintext fuzzing")
     mutations = randInput(sampleCombs, sampleChoices)
     for i in mutations:
-        sendInputAndCheck(binary, i, "Found vulnerability in plaintext!")
+        if sendInputAndCheck(binary, i,lock):
+            return True , "Found vulnerability in plaintext!"
     
     print("Attempting random-typed plaintext fuzzing")
     mutations = typedInput(sampleCombs, sampleChoices)
     for i in mutations:
-        sendInputAndCheck(binary, i, "Found vulnerability in plaintext!")
-
+        if sendInputAndCheck(binary, i,lock):
+            return True , "Found vulnerability in plaintext!"
+    return False
 
 if __name__ == "__main__":
     sampleInput = open("./binaries/plaintext2.txt", "r")
