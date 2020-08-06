@@ -11,6 +11,7 @@ from xmlHelpers import *
 from type_checker import checkCSV, checkJSON, checkXML
 import concurrent.futures
 import multiprocessing
+import time
 
 
 def runCSVFuzzer(sampleInput, binary, lock, executor, futures):
@@ -37,6 +38,13 @@ def runPlaintextFuzzer(sampleInput, binary, lock, executor, futures):
     futures.append(executor.submit(fuzzPlaintext, sampleInput, binary, lock))
 
 
+def endTime(start):
+    end = time.time()
+    difference = end - start
+    difference = time.localtime(difference).tm_sec
+    print("Elapsed Time: " + str(difference))
+
+
 if __name__ == "__main__":
 
     # First check the correct number of arguments are given.
@@ -49,6 +57,9 @@ if __name__ == "__main__":
     except:
         print("Error:", sys.exc_info()[0])
         sys.exit("Usage: ./fuzzer program sampleinput.txt")
+
+    # Timer starts here to calculate running time.
+    start = time.time()
 
     # We also know the binary will be the first argument given.
     binary = sys.argv[1]
@@ -91,7 +102,9 @@ if __name__ == "__main__":
             else:
                 print("==============================================")
                 print(description)
+                endTime(start)
                 exit(0)
     print("No vulnerabilities found :(\n", end="")
+    endTime(start)
 
 # TODO: json2, plaintext2, xml1, xml2, xml3

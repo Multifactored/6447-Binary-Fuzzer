@@ -14,7 +14,7 @@ def urandomFuzzer(binary, lock):
     # We pass in the output from /dev/urandom into the binary 100 times
     for _ in range(0, 100):
 
-        # To get this input, we use the bultin function 'urandom', which returns
+        # To get this input, we use the builtin function 'urandom', which returns
         # random bytes from an OS-specific randomness source.
         mutatedInput = str(os.urandom(10000))
         if sendInputAndCheck(binary, mutatedInput, lock):
