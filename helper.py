@@ -10,12 +10,12 @@ def urandomFuzzer(binary):
     print("Fuzzing the binary with '/dev/urandom'...\n", end="")
 
     # We pass in the output from /dev/urandom into the binary 100 times
-    for _ in range(0,100):
+    for _ in range(0, 100):
 
         # To get this input, we use the bultin function 'urandom', which returns
         # random bytes from an OS-specific randomness source.
         mutatedInput = str(os.urandom(10000))
-        sendInputAndCheck(binary,mutatedInput,"Found vulnerability from '/dev/urandom'!")
+        sendInputAndCheck(binary, mutatedInput, "Found vulnerability from '/dev/urandom'!")
 
 
 # Flips random bits in the sample input and passes this into the binary
@@ -43,10 +43,10 @@ def bitFlip(sampleInputFile, binary):
         # that can be passed in as input to the binary
         mutatedInput = b.decode('ascii').strip()
 
-        sendInputAndCheck(binary,mutatedInput,"Found vulnerability from bit flip!")
+        sendInputAndCheck(binary, mutatedInput, "Found vulnerability from bit flip!")
 
 
-def sendInputAndCheck(binary,mutatedInput,description):
+def sendInputAndCheck(binary, mutatedInput, description):
 
     # this is to silence pwntool logs
     context.log_level = 'error'
@@ -71,7 +71,7 @@ def sendInputAndCheck(binary,mutatedInput,description):
 
 
 def generateInt():
-    return random.randint(-99999999,99999999)
+    return random.randint(-99999999, 99999999)
 
 
 def generateStr(maxPower):
@@ -107,3 +107,4 @@ def valGenerateTyped(val, i):
         sys.exit("Unexpected type:", type(val), val)
 
     return val
+    

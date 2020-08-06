@@ -11,6 +11,7 @@ from type_checker import checkCSV, checkJSON, checkXML
 import concurrent.futures
 import multiprocessing
 
+
 def runCSVFuzzer(sampleInput, binary):
     print("Is a CSV file...\n", end="")
     checkBufferOverflowLines(sampleInput, binary)

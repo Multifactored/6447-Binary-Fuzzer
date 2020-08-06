@@ -4,7 +4,6 @@ import json
 import random
 from helper import *
 from itertools import combinations
-#this is for a weird thing
 import copy
 
 
@@ -14,7 +13,7 @@ def jsonRandomTyped(jsonInput: dict, key_set: list):
 
     for i in range(10):
         for subset in key_set:
-            print(jsonInput)
+            #print(jsonInput) this was for checking mutability, remove on submission
             mutatedJson = copy.deepcopy(jsonInput)
             for key in subset:
                 # find value type and generate random value according to that
@@ -24,7 +23,7 @@ def jsonRandomTyped(jsonInput: dict, key_set: list):
                 mutatedJson[key] = val
 
             output.append(mutatedJson)
-            sleep(2)
+            #sleep(2)
     return output
 
 def fuzzJSON(sampleInputFile, binary):
@@ -47,7 +46,7 @@ def fuzzJSON(sampleInputFile, binary):
 
         mutations = jsonRandomTyped(jsonInput, key_set)
         for i in mutations:
-            sendInputAndCheck(binary,json.dumps(i),"Found vulnerability in JSON!")
+            sendInputAndCheck(binary, json.dumps(i), "Found vulnerability in JSON!")
 
 if __name__ == "__main__":
     # for testing

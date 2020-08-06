@@ -13,7 +13,7 @@ def checkBufferOverflowLines(sampleInputFile, binary):
         # We simply duplicate the first line of the file i * 10 times in our sample
         # input
         mutatedInput = (sampleInput * i * 10)
-        sendInputAndCheck(binary,mutatedInput,"Found vulnerability from buffer overflow of lines!")
+        sendInputAndCheck(binary, mutatedInput, "Found vulnerability from buffer overflow of lines!")
     return
 
 def checkBufferOverflowColumns(sampleInputFile, binary):
@@ -23,21 +23,21 @@ def checkBufferOverflowColumns(sampleInputFile, binary):
     sampleInput = sampleInputFile.readline()
     columnValues = sampleInput.strip().split(",")
     modifiedValues = []
-    for _ in range(0,len(columnValues)):
+    for _ in range(0, len(columnValues)):
         modifiedValues.append("z")
     # fuzz using the original values
     print("Fuzzing Columns with original input\n", end="")
-    fuzzColumns(binary,columnValues)
+    fuzzColumns(binary, columnValues)
     # fuzz using modified columnValues
     print("Fuzzing Columns with modified input values\n", end="")
-    fuzzColumns(binary,modifiedValues)
+    fuzzColumns(binary, modifiedValues)
 
 # For example: aaa........,bbbb.........,cccc.....,ddd...................
-def fuzzColumns(binary,columnValues):
+def fuzzColumns(binary, columnValues):
     columnValues = list(columnValues)
-    for _ in range(1,100):
+    for _ in range(1, 100):
         # increase length of each element by 10 per iteration
         columnValues = [e + "x" * 10 for e in columnValues]
         mutatedInput = ",".join(columnValues)
-        sendInputAndCheck(binary,mutatedInput,"Found vulnerability from buffer overflow in columns!")
+        sendInputAndCheck(binary, mutatedInput, "Found vulnerability from buffer overflow in columns!")
     return
