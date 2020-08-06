@@ -7,27 +7,34 @@ import os
 from csvHelpers import *
 from jsonHelpers import *
 from plaintextHelpers import *
+from xmlHelpers import *
 from type_checker import checkCSV, checkJSON, checkXML
 import concurrent.futures
 import multiprocessing
 
-def runCSVFuzzer(sampleInput, binary,lock,executor,futures):
+
+def runCSVFuzzer(sampleInput, binary, lock, executor, futures):
     print("Is a CSV file...\n", end="")
-    futures.append(executor.submit(checkBufferOverflowLines, sampleInput, binary,lock))
-    futures.append(executor.submit(checkBufferOverflowColumns, sampleInput, binary,lock))
+    futures.append(executor.submit(
+        checkBufferOverflowLines, sampleInput, binary, lock))
+    futures.append(executor.submit(
+        checkBufferOverflowColumns, sampleInput, binary, lock))
 
-def runJSONFuzzer(sampleInput, binary,lock,executor,futures):
+
+def runJSONFuzzer(sampleInput, binary, lock, executor, futures):
     print("Is a JSON file...\n", end="")
-    futures.append(executor.submit(fuzzJSON, sampleInput, binary,lock))
+    futures.append(executor.submit(fuzzJSON, sampleInput, binary, lock))
 
-def runXMLFuzzer(sampleInput, binary,lock,executor,futures):
+
+def runXMLFuzzer(sampleInput, binary, lock, executor, futures):
     print("Is an XML file...\n", end="")
+    futures.append(executor.submit(fuzzXML, sampleInput, binary, lock))
     pass
 
 
-def runPlaintextFuzzer(sampleInput, binary,lock,executor,futures):
+def runPlaintextFuzzer(sampleInput, binary, lock, executor, futures):
     print("Is a plaintext file...\n", end="")
-    futures.append(executor.submit(fuzzPlaintext, sampleInput, binary,lock))
+    futures.append(executor.submit(fuzzPlaintext, sampleInput, binary, lock))
 
 
 if __name__ == "__main__":
@@ -52,29 +59,29 @@ if __name__ == "__main__":
         # Now we can begin fuzzing the binary.
         # We first check if it is in csv format.
         if checkCSV(sampleInput):
-            runCSVFuzzer(sampleInput, binary,lock,executor,futures)
+            runCSVFuzzer(sampleInput, binary, lock, executor, futures)
         # Next we check if it is in json format.
         elif checkJSON(sampleInput):
-            runJSONFuzzer(sampleInput, binary,lock,executor,futures)
+            runJSONFuzzer(sampleInput, binary, lock, executor, futures)
         # Finally we see if it is in xml format.
         elif checkXML(sampleInput):
-            runXMLFuzzer(sampleInput, binary,lock,executor,futures)
+            runXMLFuzzer(sampleInput, binary, lock, executor, futures)
         # If it matched none of these file formats, then we treat it as plaintext.
         else:
-            runPlaintextFuzzer(sampleInput, binary,lock,executor,futures)
+            runPlaintextFuzzer(sampleInput, binary, lock, executor, futures)
 
         # If we didn't find a vulnerability through format-specific fuzzing,
         # we can now do some generic fuzzing.
         # So, we first fuzz the binary with input from '/dev/urandom'.
-        futures.append(executor.submit(urandomFuzzer, binary,lock))
+        futures.append(executor.submit(urandomFuzzer, binary, lock))
 
         # And then we try bit flipping the sample input.
-        futures.append(executor.submit(bitFlip, sampleInput, binary,lock))
+        futures.append(executor.submit(bitFlip, sampleInput, binary, lock))
 
         for future in concurrent.futures.as_completed(futures):
             try:
                 # result holds the value from sendInputAndCheck
-                result , description = future.result()
+                result, description = future.result()
                 if result:
                     executor._threads.clear()
                     concurrent.futures.thread._threads_queues.clear()
