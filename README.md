@@ -1,6 +1,9 @@
 # COMP6447 Fuzzer Major Assignment
 
-Remember the w7 point, bois
+=========================
+Usage: `./fuzzer /path/to/binary /path/to/sampleinput`
+
+be careful of committing zIDs and stuff since it'll be public probably
 
 featuring:
 
