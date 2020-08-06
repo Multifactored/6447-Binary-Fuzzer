@@ -4,6 +4,8 @@ import json
 import random
 from helper import *
 from itertools import combinations
+#this is for a weird thing
+import copy
 
 
 def jsonRandomTyped(jsonInput: dict, key_set: list):
@@ -12,7 +14,8 @@ def jsonRandomTyped(jsonInput: dict, key_set: list):
 
     for i in range(10):
         for subset in key_set:
-            mutatedJson = jsonInput
+            print(jsonInput)
+            mutatedJson = copy.deepcopy(jsonInput)
             for key in subset:
                 # find value type and generate random value according to that
                 val = jsonInput[key]
@@ -21,6 +24,7 @@ def jsonRandomTyped(jsonInput: dict, key_set: list):
                 mutatedJson[key] = val
 
             output.append(mutatedJson)
+            sleep(2)
     return output
 
 def fuzzJSON(sampleInputFile, binary):
