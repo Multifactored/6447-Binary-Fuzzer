@@ -92,13 +92,15 @@ def fuzzPlaintext(sampleInput, binary,lock):
     print("Attempting random plaintext fuzzing")
     mutations = randInput(sampleCombs, sampleChoices)
     for i in mutations:
-        sendInputAndCheck(binary, i, "Found vulnerability in plaintext!",lock)
+        if sendInputAndCheck(binary, i, "Found vulnerability in plaintext!",lock):
+            return True
     
     print("Attempting random-typed plaintext fuzzing")
     mutations = typedInput(sampleCombs, sampleChoices)
     for i in mutations:
-        sendInputAndCheck(binary, i, "Found vulnerability in plaintext!",lock)
-
+        if sendInputAndCheck(binary, i, "Found vulnerability in plaintext!",lock):
+            return True
+    return False
 
 if __name__ == "__main__":
     sampleInput = open("./binaries/plaintext2.txt", "r")

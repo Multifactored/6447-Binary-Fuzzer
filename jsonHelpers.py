@@ -43,7 +43,9 @@ def fuzzJSON(sampleInputFile, binary,lock):
 
         mutations = jsonRandomTyped(jsonInput, key_set)
         for i in mutations:
-            sendInputAndCheck(binary,json.dumps(i),"Found vulnerability in JSON!",lock)
+            if sendInputAndCheck(binary,json.dumps(i),"Found vulnerability in JSON!",lock):
+                return True
+    return False
 
 if __name__ == "__main__":
     # for testing

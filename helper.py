@@ -15,8 +15,9 @@ def urandomFuzzer(binary,lock):
         # To get this input, we use the bultin function 'urandom', which returns
         # random bytes from an OS-specific randomness source.
         mutatedInput = str(os.urandom(10000))
-        sendInputAndCheck(binary,mutatedInput,"Found vulnerability from '/dev/urandom'!",lock)
-
+        if sendInputAndCheck(binary,mutatedInput,"Found vulnerability from '/dev/urandom'!",lock):
+            return True
+    return False
 
 # Flips random bits in the sample input and passes this into the binary
 def bitFlip(sampleInputFile, binary,lock):
@@ -43,8 +44,9 @@ def bitFlip(sampleInputFile, binary,lock):
         # that can be passed in as input to the binary
         mutatedInput = b.decode('ascii').strip()
 
-        sendInputAndCheck(binary,mutatedInput,"Found vulnerability from bit flip!",lock)
-
+        if sendInputAndCheck(binary,mutatedInput,"Found vulnerability from bit flip!",lock):
+            return True
+    return False
 
 def sendInputAndCheck(binary,mutatedInput,description,lock):
 
@@ -68,9 +70,9 @@ def sendInputAndCheck(binary,mutatedInput,description,lock):
         res = open("bad.txt", "w+")
         res.write(mutatedInput)
         res.close()
-        os._exit(1)
-        lock.release() #this doesnt really matter since we've exited
-
+        # lock.release() #this doesnt really matter since we've exited
+        return True
+    return False
 
 def generateInt():
     return random.randint(-99999999,99999999)
