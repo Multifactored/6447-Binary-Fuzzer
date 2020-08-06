@@ -23,7 +23,7 @@ def jsonRandomTyped(jsonInput: dict, key_set: list):
             output.append(mutatedJson)
     return output
 
-def fuzzJSON(sampleInputFile, binary):
+def fuzzJSON(sampleInputFile, binary,lock):
 
     print("Fuzzing the JSON formatted sample input...\n", end="")
 
@@ -43,7 +43,7 @@ def fuzzJSON(sampleInputFile, binary):
 
         mutations = jsonRandomTyped(jsonInput, key_set)
         for i in mutations:
-            sendInputAndCheck(binary,json.dumps(i),"Found vulnerability in JSON!")
+            sendInputAndCheck(binary,json.dumps(i),"Found vulnerability in JSON!",lock)
 
 if __name__ == "__main__":
     # for testing

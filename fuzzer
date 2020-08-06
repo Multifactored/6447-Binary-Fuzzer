@@ -11,25 +11,25 @@ from type_checker import checkCSV, checkJSON, checkXML
 import concurrent.futures
 import multiprocessing
 
-def runCSVFuzzer(sampleInput, binary):
+def runCSVFuzzer(sampleInput, binary,lock):
     print("Is a CSV file...\n", end="")
-    checkBufferOverflowLines(sampleInput, binary)
-    checkBufferOverflowColumns(sampleInput, binary)
+    checkBufferOverflowLines(sampleInput, binary,lock)
+    checkBufferOverflowColumns(sampleInput, binary,lock)
 
 
-def runJSONFuzzer(sampleInput, binary):
+def runJSONFuzzer(sampleInput, binary,lock):
     print("Is a JSON file...\n", end="")
-    fuzzJSON(sampleInput, binary)
+    fuzzJSON(sampleInput, binary,lock)
 
 
-def runXMLFuzzer(sampleInput, binary):
+def runXMLFuzzer(sampleInput, binary,lock):
     print("Is an XML file...\n", end="")
     pass
 
 
-def runPlaintextFuzzer(sampleInput, binary):
+def runPlaintextFuzzer(sampleInput, binary,lock):
     print("Is a plaintext file...\n", end="")
-    fuzzPlaintext(sampleInput, binary)
+    fuzzPlaintext(sampleInput, binary,lock)
 
 
 if __name__ == "__main__":
@@ -47,30 +47,30 @@ if __name__ == "__main__":
 
     # We also know the binary will be the first argument given.
     binary = sys.argv[1]
-
+    lock = multiprocessing.Lock()
     with concurrent.futures.ThreadPoolExecutor(max_workers=multiprocessing.cpu_count()) as executor:
 
         # Now we can begin fuzzing the binary.
         # We first check if it is in csv format.
         if checkCSV(sampleInput):
-            executor.submit(runCSVFuzzer, sampleInput, binary)
+            executor.submit(runCSVFuzzer, sampleInput, binary,lock)
         # Next we check if it is in json format.
         elif checkJSON(sampleInput):
-            executor.submit(runJSONFuzzer, sampleInput, binary)
+            executor.submit(runJSONFuzzer, sampleInput, binary,lock)
         # Finally we see if it is in xml format.
         elif checkXML(sampleInput):
-            executor.submit(runXMLFuzzer, sampleInput, binary)
+            executor.submit(runXMLFuzzer, sampleInput, binary,lock)
         # If it matched none of these file formats, then we treat it as plaintext.
         else:
-            executor.submit(runPlaintextFuzzer, sampleInput, binary)
+            executor.submit(runPlaintextFuzzer, sampleInput, binary,lock)
 
         # If we didn't find a vulnerability through format-specific fuzzing,
         # we can now do some generic fuzzing.
         # So, we first fuzz the binary with input from '/dev/urandom'.
-        executor.submit(urandomFuzzer, binary)
+        executor.submit(urandomFuzzer, binary,lock)
 
         # And then we try bit flipping the sample input.
-        executor.submit(bitFlip, sampleInput, binary)
+        executor.submit(bitFlip, sampleInput, binary,lock)
 
     print("No vulnerabilities found :(\n", end="")
 
