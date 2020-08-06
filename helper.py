@@ -5,7 +5,9 @@ import sys
 import subprocess
 
 # Fuzzes the binary with input from '/dev/urandom'
-def urandomFuzzer(binary,lock):
+
+
+def urandomFuzzer(binary, lock):
 
     print("Fuzzing the binary with '/dev/urandom'...\n", end="")
 
@@ -15,12 +17,14 @@ def urandomFuzzer(binary,lock):
         # To get this input, we use the bultin function 'urandom', which returns
         # random bytes from an OS-specific randomness source.
         mutatedInput = str(os.urandom(10000))
-        if sendInputAndCheck(binary,mutatedInput,lock):
-            return True , "Found vulnerability from '/dev/urandom'!"
+        if sendInputAndCheck(binary, mutatedInput, lock):
+            return True, "Found vulnerability from '/dev/urandom'!"
     return False
 
 # Flips random bits in the sample input and passes this into the binary
-def bitFlip(sampleInputFile, binary,lock):
+
+
+def bitFlip(sampleInputFile, binary, lock):
 
     print("Flipping random bits in sample input...\n", end="")
 
@@ -44,24 +48,25 @@ def bitFlip(sampleInputFile, binary,lock):
         # that can be passed in as input to the binary
         mutatedInput = b.decode('ascii').strip()
 
-        if sendInputAndCheck(binary,mutatedInput,lock):
-            return True , "Found vulnerability from bit flip!"
+        if sendInputAndCheck(binary, mutatedInput, lock):
+            return True, "Found vulnerability from bit flip!"
     return False
 
-def sendInputAndCheck(binary,mutatedInput,lock):
+
+def sendInputAndCheck(binary, mutatedInput, lock):
     # this is to silence pwntool logs
     context.log_level = 'error'
 
     p = process(binary)
     p.sendline(mutatedInput)
     p.proc.stdin.close()
-        
+
     exit_status = p.poll(block=True)
     p.close()
-        
+
     # After it has finished running, we check the exit status of the process.
-    # If this input resulted in an exit status less than 0 (and also didn't abort), 
-    # this means there was an exception, so we want to write it to 'bad.txt' 
+    # If this input resulted in an exit status less than 0 (and also didn't abort),
+    # this means there was an exception, so we want to write it to 'bad.txt'
     # and exit the fuzzer.
     if exit_status < 0 and exit_status != -6:
         lock.acquire()
@@ -70,6 +75,7 @@ def sendInputAndCheck(binary,mutatedInput,lock):
         res.close()
         return True
     return False
+
 
 def generateInt():
     return random.randint(-99999999, 99999999)
@@ -82,7 +88,7 @@ def generateStr(maxPower):
 
 
 def generateList():
-    return random.sample(range(0, 9999), random.randint(1,100))
+    return random.sample(range(0, 9999), random.randint(1, 100))
 
 
 def valGenerateTyped(val, i):
@@ -108,4 +114,3 @@ def valGenerateTyped(val, i):
         sys.exit("Unexpected type:", type(val), val)
 
     return val
-    
