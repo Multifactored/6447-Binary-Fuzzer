@@ -15,8 +15,8 @@ def urandomFuzzer(binary,lock):
         # To get this input, we use the bultin function 'urandom', which returns
         # random bytes from an OS-specific randomness source.
         mutatedInput = str(os.urandom(10000))
-        if sendInputAndCheck(binary,mutatedInput,"Found vulnerability from '/dev/urandom'!",lock):
-            return True
+        if sendInputAndCheck(binary,mutatedInput,lock):
+            return True , "Found vulnerability from '/dev/urandom'!"
     return False
 
 # Flips random bits in the sample input and passes this into the binary
@@ -44,11 +44,11 @@ def bitFlip(sampleInputFile, binary,lock):
         # that can be passed in as input to the binary
         mutatedInput = b.decode('ascii').strip()
 
-        if sendInputAndCheck(binary,mutatedInput,"Found vulnerability from bit flip!",lock):
-            return True
+        if sendInputAndCheck(binary,mutatedInput,lock):
+            return True , "Found vulnerability from bit flip!"
     return False
 
-def sendInputAndCheck(binary,mutatedInput,description,lock):
+def sendInputAndCheck(binary,mutatedInput,lock):
 
     # this is to silence pwntool logs
     context.log_level = 'error'
@@ -66,11 +66,9 @@ def sendInputAndCheck(binary,mutatedInput,description,lock):
     # and exit the fuzzer.
     if exit_status < 0 and exit_status != -6:
         lock.acquire()
-        print(description)
         res = open("bad.txt", "w+")
         res.write(mutatedInput)
         res.close()
-        # lock.release() #this doesnt really matter since we've exited
         return True
     return False
 
