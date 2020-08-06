@@ -29,13 +29,14 @@ def checkBufferOverflowColumns(sampleInputFile, binary,lock):
         modifiedValues.append("z")
     # fuzz using the original values
     print("Fuzzing Columns with original input\n", end="")
+    description = "Found vulnerability from buffer overflow in columns!"
     if fuzzColumns(binary,columnValues,lock):
-        return True , "Found vulnerability from buffer overflow in columns!"
+        return True , description
     # fuzz using modified columnValues
     print("Fuzzing Columns with modified input values\n", end="")
     if fuzzColumns(binary,modifiedValues,lock):
-        return True , "Found vulnerability from buffer overflow in columns!"
-
+        return True , description
+        
 # For example: aaa........,bbbb.........,cccc.....,ddd...................
 def fuzzColumns(binary,columnValues,lock):
     columnValues = list(columnValues)
