@@ -17,6 +17,7 @@ def checkBufferOverflowLines(sampleInputFile, binary,lock):
             return True , "Found vulnerability from buffer overflow of lines!"
     return False
 
+
 def checkBufferOverflowColumns(sampleInputFile, binary,lock):
     print("Looking for buffer overflow in the columns...\n", end="")
     # First we read the first line of the file and store it in a string
@@ -24,7 +25,7 @@ def checkBufferOverflowColumns(sampleInputFile, binary,lock):
     sampleInput = sampleInputFile.readline()
     columnValues = sampleInput.strip().split(",")
     modifiedValues = []
-    for _ in range(0,len(columnValues)):
+    for _ in range(0, len(columnValues)):
         modifiedValues.append("z")
     # fuzz using the original values
     print("Fuzzing Columns with original input\n", end="")
@@ -36,7 +37,7 @@ def checkBufferOverflowColumns(sampleInputFile, binary,lock):
 # For example: aaa........,bbbb.........,cccc.....,ddd...................
 def fuzzColumns(binary,columnValues,lock):
     columnValues = list(columnValues)
-    for _ in range(1,100):
+    for _ in range(1, 100):
         # increase length of each element by 10 per iteration
         columnValues = [e + "x" * 10 for e in columnValues]
         mutatedInput = ",".join(columnValues)
