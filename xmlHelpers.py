@@ -34,18 +34,40 @@ def addForgedURLS(sampleInputFile, binary, lock):
     for i in all_tags_with_href:
         i.set('href',"%s" * 100)
 
-
-    # NEED TO ADD MORE VARIATIONS, THIS IS JUST FOR XML1
     xmlstr = ET.tostring(root).decode()
     if sendInputAndCheck(binary, xmlstr, lock):
         return True, "Found vulnerability in XML!"
     return False
 
+def update_all_tags_attributes(root,new_attribute,repeat):
+    root_copy = copy.deepcopy(root)
+    list_of_found_tags = recursive_find_all_tags(root_copy,[])
+
+    for i in list_of_found_tags:
+        attributes_list_for_this_tag = i.attrib.keys()
+        for attr in attributes_list_for_this_tag:
+            i.set(attr,new_attribute * repeat)
+    return root_copy
+
+# this is a more generic one compared to addForgedURLS
 def randomized_attributes(sampleInputFile, binary, lock):
-    # TODO: similar to addForgedURLS() but this time, for all tags that have an attribute, change the attribute
-    # to %s * 100, %p*100, p32(0xdeadbeef) , p32(0x41414141) , random numbers / chars etc... 
-    pass
-    
+    # similar to addForgedURLS() but this time, for all tags that have an attribute, change the attribute
+    # "%s", "%p", "%x","A", "*", "1","a9", "lol"
+    sampleInputFile.seek(0)
+    sampleInput = sampleInputFile.read()
+
+    root = ET.fromstring(sampleInput)
+
+    listOfNewAttrs = ["%s", "%p", "%x","A", "*", "1","a9", "lol"]
+
+    for i in listOfNewAttrs:
+        # this can also check for buffer overflows in the attributes
+        new_updated_root = update_all_tags_attributes(root, i,1000)
+        xmlstr = ET.tostring(new_updated_root).decode()
+        if sendInputAndCheck(binary, xmlstr, lock):
+            return True, "Found vulnerability in XML by fuzzing the attributes!"    
+    return False
+
 def copyChildInfinitelyMany(sampleInputFile, binary, lock):
     print("Fuzzing the XML.. Duplicating child tags...\n", end="")
     sampleInputFile.seek(0)
@@ -65,7 +87,6 @@ def copyChildInfinitelyMany(sampleInputFile, binary, lock):
             return True, "Found vulnerability in XML!"    
     return False
 
-# try having near infinite sub elements <div> <div> <div> <div>...</div></div></div></div>
 
 # try inputting large sizes with all sorts of char injects
 
