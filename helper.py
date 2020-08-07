@@ -76,7 +76,12 @@ def sendInputAndCheck(binary, mutatedInput, lock):
         return True
     return False
 
-
+def endTime(start):
+    end = time.time()
+    difference = end - start
+    difference = time.localtime(difference).tm_sec
+    print("Elapsed Time: " + str(difference) + " seconds")
+    
 def generateInt():
     return random.randint(-99999999, 99999999)
 
