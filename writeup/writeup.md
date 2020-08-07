@@ -38,6 +38,8 @@ The CSV-specific section will attempt to find a buffer overflow in 2 ways:
 
 **JSON**
 
+WRITTEN PRE-JSON2
+
 The JSON-specific section takes the sample input file and manipulates every value for every key combination.
 
 - For every key mapping to an variable, the function will generate a random variable of the same type to replace it. This is to attempt a type based overflow, or buffer overflow.
@@ -45,7 +47,13 @@ The JSON-specific section takes the sample input file and manipulates every valu
 
 **XML**
 
-COULD CHANGE
+COULD CHANGE, WRITTEN PRE-XML3
+
+The XML-specific section tries to permutate input with three different methods to achieve a segfault. These are listed below:
+
+- The sample input's attribute tags are replaced with possibly vulnerable attributes, including format string and type vulnerabilities. This can either buffer overflow attribute checking functions, or create strange behaviour.
+- If there are URLs in sample input, we replace them with '%s' to attempt a format string vulnerability to read invalid memory.
+- The fuzzer attempts to recursively copy the root of the sample input as a child infinitely.
 
 **Plaintext**
 
