@@ -41,6 +41,11 @@ def addForgedURLS(sampleInputFile, binary, lock):
         return True, "Found vulnerability in XML!"
     return False
 
+def randomized_attributes(sampleInputFile, binary, lock):
+    # TODO: similar to addForgedURLS() but this time, for all tags that have an attribute, change the attribute
+    # to %s * 100, %p*100, p32(0xdeadbeef) , p32(0x41414141) , random numbers / chars etc... 
+    pass
+    
 def copyChildInfinitelyMany(sampleInputFile, binary, lock):
     print("Fuzzing the XML.. Duplicating child tags...\n", end="")
     sampleInputFile.seek(0)
