@@ -21,6 +21,8 @@ We speed up this process with our multithreading implementation. When a vulnerab
 
 ## **Possible Improvements**
 
+xml3 json2 let's go
+
 ## **Bug Enumeration Methods**
 
 **Bit-Flipping**
@@ -43,8 +45,11 @@ The JSON-specific section takes the sample input file and manipulates every valu
 
 **XML**
 
-placeholder
+COULD CHANGE
 
 **Plaintext**
 
-placeholder
+The plaintext-specific section attempts to find an overflow by sequentially trying both:
+
+- Inputting randomly generated strings that increase exponentially in length, up to 2^14;
+- Mutating input from the provided input according to its type.
