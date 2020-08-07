@@ -30,6 +30,7 @@ def runJSONFuzzer(sampleInput, binary, lock, executor, futures):
 def runXMLFuzzer(sampleInput, binary, lock, executor, futures):
     print("Is an XML file...\n", end="")
     futures.append(executor.submit(addForgedURLS, sampleInput, binary, lock))
+    futures.append(executor.submit(copyChildInfinitelyMany, sampleInput, binary, lock))
 
 def runPlaintextFuzzer(sampleInput, binary, lock, executor, futures):
     print("Is a plaintext file...\n", end="")

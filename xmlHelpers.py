@@ -3,7 +3,7 @@ import sys
 import xml.etree.ElementTree as ET
 import random
 from helper import *
-
+import copy
 from itertools import combinations
 
 # TODO
@@ -39,6 +39,25 @@ def addForgedURLS(sampleInputFile, binary, lock):
     xmlstr = ET.tostring(root).decode()
     if sendInputAndCheck(binary, xmlstr, lock):
         return True, "Found vulnerability in XML!"
+    return False
+
+def copyChildInfinitelyMany(sampleInputFile, binary, lock):
+    print("Fuzzing the XML.. Duplicating child tags...\n", end="")
+    sampleInputFile.seek(0)
+    sampleInput = sampleInputFile.read()
+
+    root = ET.fromstring(sampleInput)
+
+    a = root.find(".")
+    # need to copy the original one to avoid doing 2^n
+    tmp = copy.deepcopy(a)
+    # for each iteration, append to the root the children of it
+    for _ in range(100):
+        b = copy.deepcopy(tmp)
+        a.append(b)
+        xmlstr = ET.tostring(a).decode()
+        if sendInputAndCheck(binary, xmlstr, lock):
+            return True, "Found vulnerability in XML!"    
     return False
 
 # try having near infinite sub elements <div> <div> <div> <div>...</div></div></div></div>
