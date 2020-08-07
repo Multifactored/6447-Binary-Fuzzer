@@ -41,12 +41,10 @@ def fuzzJSON(sampleInputFile, binary, lock):
         for combs in combinations(choices, i):
             key_set.append(combs)
 
-    # attempt to fuzz 3 times
-    for _ in range(3):
-        mutations = jsonRandomTyped(jsonInput, key_set)
-        for i in mutations:
-            if sendInputAndCheck(binary, json.dumps(i), lock):
-                return True, "Found vulnerability in JSON!"
+    mutations = jsonRandomTyped(jsonInput, key_set)
+    for i in mutations:
+        if sendInputAndCheck(binary, json.dumps(i), lock):
+            return True, "Found vulnerability in JSON!"
     return False
 
 
