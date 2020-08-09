@@ -99,4 +99,4 @@ if __name__ == "__main__":
     print("No vulnerabilities found :(\n", end="")
     endTime(start)
 
-# TODO: json2, plaintext2, xml1, xml2, xml3
+# TODO: json2, xml3
