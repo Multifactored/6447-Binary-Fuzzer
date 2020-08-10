@@ -122,7 +122,8 @@ def valGenerateTyped(val, i: int):
     return val
 
 
-def generateBadJson(size: int):
+def generateWeirdJson(size: int):
+    ''' Generate variable sized JSONs within JSON '''
     badJson = {}
 
     currJson = {}
@@ -135,4 +136,4 @@ def generateBadJson(size: int):
 
 
 if __name__ == "__main__":
-    print(generateBadJson(5))
+    print(generateWeirdJson(5))
