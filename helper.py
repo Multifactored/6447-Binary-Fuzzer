@@ -3,6 +3,7 @@ from pwn import *
 import os
 import sys
 import subprocess
+import json
 
 # Fuzzes the binary with input from '/dev/urandom'
 
@@ -82,21 +83,21 @@ def endTime(start):
     difference = time.localtime(difference).tm_sec
     print("Elapsed Time: " + str(difference) + " seconds")
     
-def generateInt():
+def generateInt() -> int:
     return random.randint(-99999999, 99999999)
 
 
-def generateStr(maxPower):
+def generateStr(maxPower: int) -> str:
     choices = r"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!@#$%^&*()_+-={}|[]\\:\";'<>?,./~`"
     maxPower = 2 ** maxPower
     return ''.join(random.choice(choices) for i in range(maxPower))
 
 
-def generateList():
+def generateList() -> list:
     return random.sample(range(0, 9999), random.randint(1, 100))
 
 
-def valGenerateTyped(val, i):
+def valGenerateTyped(val, i: int):
     # find value type and generate random value according to that
     if type(val) == int:
         # generate random int
@@ -119,3 +120,19 @@ def valGenerateTyped(val, i):
         sys.exit("Unexpected type:", type(val), val)
 
     return val
+
+
+def generateBadJson(size: int):
+    badJson = {}
+
+    currJson = {}
+    for i in range(size):
+        currJson[str(i)] = i
+
+    badJson[str(random.randint(0,9))] = json.dumps(currJson) * size * 3
+    
+    return json.dumps(badJson)
+
+
+if __name__ == "__main__":
+    print(generateBadJson(5))
