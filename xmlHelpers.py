@@ -88,7 +88,7 @@ def copyChildInfinitelyMany(sampleInputFile, binary, lock):
     return False
     
 def makeWideXML(n):
-    n = 2 ** n
+    n = 35000
     print(n)
     output = ""
     output += "<xml>" * n
@@ -98,16 +98,9 @@ def makeWideXML(n):
 # we generate long XMLs that are generic to test memory allocation/buffer overflow with tag parsing.
 def floodXMLs(binary, lock):
     print("Fuzzing the XML with wide nested tags.")
-    
-    for num in range(20):
-        wideXML = makeWideXML(num)
-
-        # this doesn't work every time
-        for _ in range(4):
-            if sendInputAndCheck(binary, wideXML, lock):
-                print("worked")
-                return True, "Found vulnerability in XML with wide tag technique!"
-
+    test = "<html>{}fuku{}</html>".format("<tag>"*35000, "</tag>"*35000)
+    if sendInputAndCheck(binary, test, lock):
+            return True, "Found vulnerability in XML!"    
     return False
 
 
