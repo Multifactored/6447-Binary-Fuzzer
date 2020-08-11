@@ -65,5 +65,7 @@ The XML-specific section tries to permutate input with four different methods to
 
 The plaintext-specific section attempts to find an overflow by sequentially trying both:
 
-- Inputting randomly generated strings that increase exponentially in length, up to 2^14;
-- Mutating input from the provided input according to its type.
+- For every line combination we try:
+	- Inputting randomly generated strings that increase exponentially in length, up to 2^14
+	- Mutating input from the provided input according to its type.
+- This is so that we can maximise the visited code paths.
