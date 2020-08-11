@@ -32,6 +32,7 @@ def runXMLFuzzer(sampleInput, binary, lock, executor, futures):
     futures.append(executor.submit(randomized_attributes, sampleInput, binary, lock))
     futures.append(executor.submit(addForgedURLS, sampleInput, binary, lock))
     futures.append(executor.submit(copyChildInfinitelyMany, sampleInput, binary, lock))
+    futures.append(executor.submit(floodXMLs, binary, lock))
 
 def runPlaintextFuzzer(sampleInput, binary, lock, executor, futures):
     print("Is a plaintext file...\n", end="")

@@ -5,6 +5,7 @@ import random
 from helper import *
 import copy
 from itertools import combinations
+import os
 
 def recursive_find_all_tags(root,result):
     for _ in root:
@@ -85,3 +86,27 @@ def copyChildInfinitelyMany(sampleInputFile, binary, lock):
             return True, "Found vulnerability in XML!"    
     return False
     
+def makeWideXML(n):
+    with open('bruh.txt', 'w') as f:
+        f.write('<html>')
+        f.write('<b>' * n)
+        f.write('bruh')
+        f.write('</b>' * n)
+        f.write('</html>')
+
+# we generate long XMLs that are generic to test memory allocation/buffer overflow with tag parsing.
+def floodXMLs(binary, lock):
+    print("Fuzzing the XML with wide nested tags.")
+    for num in range(30000, 50000, 1000):
+        makeWideXML(num)
+        chadFile = open('bruh.txt', 'r')
+        chadTest = chadFile.read()
+        #print(chadTest)
+
+        # this doesn't work every time
+        for i in range(4):
+            if sendInputAndCheck(binary, chadTest, lock):
+                return True, "Found vulnerability in XML with wide tag technique!"
+
+    os.remove('bruh.txt')
+    return False
