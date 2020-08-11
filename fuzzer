@@ -98,5 +98,3 @@ if __name__ == "__main__":
                 exit(0)
     print("No vulnerabilities found :(\n", end="")
     endTime(start)
-
-# TODO: json2, xml3

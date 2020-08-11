@@ -6,8 +6,6 @@ from helper import *
 import copy
 from itertools import combinations
 
-# TODO
-
 def recursive_find_all_tags(root,result):
     for _ in root:
         result.append(_)
@@ -86,14 +84,4 @@ def copyChildInfinitelyMany(sampleInputFile, binary, lock):
         if sendInputAndCheck(binary, xmlstr, lock):
             return True, "Found vulnerability in XML!"    
     return False
-
-
-# try inputting large sizes with all sorts of char injects
-
-# try lots of new lines
-
-# try making any found links incredibly long with both regular and special chars
-
-# try inputting a lot of random tags from a set list
-
-# go ham with attributes
+    

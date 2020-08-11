@@ -21,7 +21,7 @@ We speed up this process with our multithreading implementation. When a vulnerab
 
 ## **Possible Improvements**
 
-xml3 json2 let's go
+xml3 let's go
 
 ## **Bug Enumeration Methods**
 
@@ -38,12 +38,14 @@ The CSV-specific section will attempt to find a buffer overflow in 2 ways:
 
 **JSON**
 
-WRITTEN PRE-JSON2
+The JSON-specific section does two things in sequential order to find a vulnerability.
 
-The JSON-specific section takes the sample input file and manipulates every value for every key combination.
+The first method takes the sample input file and manipulates every value for every key combination.
 
 - For every key mapping to an variable, the function will generate a random variable of the same type to replace it. This is to attempt a type based overflow, or buffer overflow.
 - For lists, the function will replace it with a variable length list of integers to attempt a buffer overflow.
+
+The second method relies on the creation of broken JSON statements, including erroneous data and nested json statements. This is used after the first method in order to catch strange edge cases in which exceptions are not handled properly.
 
 **XML**
 
