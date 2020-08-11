@@ -101,8 +101,3 @@ def fuzzPlaintext(sampleInput, binary,lock):
         if sendInputAndCheck(binary, i,lock):
             return True , "Found vulnerability in plaintext!"
     return False
-
-if __name__ == "__main__":
-    sampleInput = open("./binaries/plaintext2.txt", "r")
-    sampleInput.seek(0)
-    fuzzPlaintext(sampleInput, "./binaries/plaintext2")

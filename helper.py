@@ -136,7 +136,3 @@ def generateWeirdJson(size: int):
     badJson[str(random.randint(0,9))] = json.dumps(currJson) * size * 3
     
     return json.dumps(badJson)
-
-
-if __name__ == "__main__":
-    print(generateWeirdJson(5))

@@ -78,9 +78,3 @@ def fuzzJSON(sampleInputFile, binary, lock):
         if sendInputAndCheck(binary, json.dumps(i), lock):
             return True, "Found vulnerability in JSON!"
     return False
-
-
-if __name__ == "__main__":
-    # for testing
-    print(generateBadJson(10))
-    fuzzJSON(open("./binaries/json2.txt", "r"), "./binaries/json2", "")
