@@ -97,15 +97,17 @@ def makeWideXML(n):
 # we generate long XMLs that are generic to test memory allocation/buffer overflow with tag parsing.
 def floodXMLs(binary, lock):
     print("Fuzzing the XML with wide nested tags.")
-    for num in range(30000, 50000, 1000):
+    listNum = range(31000, 34000, 1000)
+    print(listNum)
+    for num in listNum:
+        print(num)
         makeWideXML(num)
         chadFile = open('bruh.txt', 'r')
-        chadTest = chadFile.read()
         #print(chadTest)
 
         # this doesn't work every time
         for i in range(4):
-            if sendInputAndCheck(binary, chadTest, lock):
+            if sendInputAndCheck(binary, chadFile.read(), lock):
                 return True, "Found vulnerability in XML with wide tag technique!"
 
     os.remove('bruh.txt')
