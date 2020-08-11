@@ -21,7 +21,11 @@ We speed up this process with our multithreading implementation. When a vulnerab
 
 ## **Possible Improvements**
 
-xml3 let's go
+There are multiple improvements we can make if we want to take the fuzzer further.
+
+- Implement an user interface that reports on current progress, elapsed time during execution and general polish.
+- Fuzz multiple binaries at once, and fuzzing multiple crashes per execution.
+- Check for more file types.
 
 ## **Bug Enumeration Methods**
 
