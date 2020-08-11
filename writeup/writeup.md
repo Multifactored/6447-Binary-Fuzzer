@@ -16,13 +16,14 @@ To begin, our fuzzer first attempts to determine the file format of the sample i
 
 For each fuzzing function, we use pwntools to spawn a new process with the given binary, and then send it our mutated input. Then we poll the exit code of this process, and if it wasn't successful, it writes this mutated input that caused the binary to crash to 'bad.txt', and then exits the fuzzer.
 
-**Multithreading**
-We speed up this process with our multithreading implementation. When a vulnerability is found, all threads exit gracefully.
+**Multiprocessing**
+We speed up this process with our multiprocessing implementation. We decided to use max_workers=multiprocessing.cpu_count(), the theoretical maximum number of processes we can run at any given moment. When a vulnerability is found from any one of the processes, all the other processes will exit.
 
 ## **Possible Improvements**
 
 There are multiple improvements we can make if we want to take the fuzzer further.
 
+- Implement a code coverage fuzzing, so that it generates permutations based on the previous trace file produced. We had a look on implementing this using qemu and gdb but due to limited time and resources, we couldnt get it to work properly.
 - Implement an user interface that reports on current progress, elapsed time during execution and general polish.
 - Fuzz multiple binaries at once, and fuzzing multiple crashes per execution.
 - Check for more file types.
@@ -56,8 +57,8 @@ The second method relies on the creation of broken JSON statements, including er
 The XML-specific section tries to permutate input with four different methods to achieve a segfault. These are listed below:
 
 - The sample input's attribute tags are replaced with possibly vulnerable attributes, including format string and type vulnerabilities. This can either buffer overflow attribute checking functions, or create strange behaviour.
-- If there are URLs in sample input, we replace them with '%s' to attempt a format string vulnerability to read invalid memory.
-- The fuzzer attempts to recursively copy the root of the sample input as a child infinitely.
+- If there are URLs in sample input, we replace them with a bunch of '%s' to attempt a format string vulnerability to read invalid memory. This technique is a subset of the first one but specifically targets the URLs.
+- The fuzzer attempts to copy the root of the sample input and appends it to the root multiple times.
 - Finally, it generates long nested tag statements to attempt to overflow the parser processing tags.
 
 **Plaintext**
