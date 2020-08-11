@@ -108,6 +108,7 @@ def floodXMLs(binary, lock):
         # this doesn't work every time
         for i in range(4):
             if sendInputAndCheck(binary, chadFile.read(), lock):
+                os.remove('bruh.txt')
                 return True, "Found vulnerability in XML with wide tag technique!"
 
     os.remove('bruh.txt')
