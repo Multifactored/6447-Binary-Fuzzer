@@ -49,13 +49,12 @@ The second method relies on the creation of broken JSON statements, including er
 
 **XML**
 
-COULD CHANGE, WRITTEN PRE-XML3
-
-The XML-specific section tries to permutate input with three different methods to achieve a segfault. These are listed below:
+The XML-specific section tries to permutate input with four different methods to achieve a segfault. These are listed below:
 
 - The sample input's attribute tags are replaced with possibly vulnerable attributes, including format string and type vulnerabilities. This can either buffer overflow attribute checking functions, or create strange behaviour.
 - If there are URLs in sample input, we replace them with '%s' to attempt a format string vulnerability to read invalid memory.
 - The fuzzer attempts to recursively copy the root of the sample input as a child infinitely.
+- Finally, it generates long nested tag statements to attempt to overflow the parser processing tags.
 
 **Plaintext**
 
