@@ -56,7 +56,7 @@ def bitFlip(sampleInputFile, binary, lock):
 
 def sendInputAndCheck(binary, mutatedInput, lock):
     # this is to silence pwntool logs
-    context.log_level = 'debug'
+    context.log_level = 'error'
 
     p = process(binary)
     p.sendline(mutatedInput)
@@ -64,8 +64,8 @@ def sendInputAndCheck(binary, mutatedInput, lock):
 
     exit_status = None
     while exit_status == None:
+        p.wait()
         exit_status = p.returncode
-        print(exit_status)
     p.close()
 
     # After it has finished running, we check the exit status of the process.
