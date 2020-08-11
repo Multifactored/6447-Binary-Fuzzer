@@ -6,6 +6,7 @@ from helper import *
 import copy
 from itertools import combinations
 import os
+import multiprocessing
 
 def recursive_find_all_tags(root,result):
     for _ in root:
@@ -87,29 +88,28 @@ def copyChildInfinitelyMany(sampleInputFile, binary, lock):
     return False
     
 def makeWideXML(n):
-    with open('bruh.txt', 'w') as f:
-        f.write('<html>')
-        f.write('<b>' * n)
-        f.write('bruh')
-        f.write('</b>' * n)
-        f.write('</html>')
+    n = 2 ** n
+    print(n)
+    output = ""
+    output += "<xml>" * n
+    output += "</xml>" * n
+    return output
 
 # we generate long XMLs that are generic to test memory allocation/buffer overflow with tag parsing.
 def floodXMLs(binary, lock):
     print("Fuzzing the XML with wide nested tags.")
-    listNum = range(31000, 34000, 1000)
-    print(listNum)
-    for num in listNum:
-        print(num)
-        makeWideXML(num)
-        chadFile = open('bruh.txt', 'r')
-        #print(chadTest)
+    
+    for num in range(20):
+        wideXML = makeWideXML(num)
 
         # this doesn't work every time
-        for i in range(4):
-            if sendInputAndCheck(binary, chadFile.read(), lock):
-                os.remove('bruh.txt')
+        for _ in range(4):
+            if sendInputAndCheck(binary, wideXML, lock):
+                print("worked")
                 return True, "Found vulnerability in XML with wide tag technique!"
 
-    os.remove('bruh.txt')
     return False
+
+
+if __name__ == "__main__":
+    floodXMLs("binaries/xml3", multiprocessing.Lock())
