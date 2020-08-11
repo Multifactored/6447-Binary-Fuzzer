@@ -8,7 +8,7 @@ import copy
 
 
 def brokenJson(jsonInput: dict, key_set: list, maxPower: int):
-    # similar to generateStr() except this has a higher chance of having the characters {}"
+    ''' similar to generateStr() except this has a higher chance of having the characters {}" '''
     choices = r'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890::::::{}"{}"{}"{}"{}"{}"{}"{}"{}"{}"{}"{}"{}"{}"{}"{}"{}"{}"{}"{}"{}"{}"{}"{}"'
     maxPower = 2 ** maxPower
     output = "{" + "\"" + generateStr(0) + "\": "+ ''.join(random.choice(choices) for i in range(maxPower)) + "}"
@@ -17,6 +17,7 @@ def brokenJson(jsonInput: dict, key_set: list, maxPower: int):
 
 
 def jsonInJson(jsonInput: dict, key_set: list):
+    ''' Uses sample JSON input and creates a huge JSON with itself as the value with the original keys '''
     output = {}
     jsonStr = json.dumps(jsonInput)
     for key in jsonInput.keys(): 
@@ -65,7 +66,7 @@ def fuzzJSON(sampleInputFile, binary, lock):
                 return True, "Found vulnerability in JSON!"
 
     for i in range(10):
-        badJson = generateBadJson(i).replace('\\"',"\"")
+        badJson = generateWeirdJson(i).replace('\\"',"\"")
         if sendInputAndCheck(binary, badJson, lock):
             return True, "Found vulnerability in JSON!"
 

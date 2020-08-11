@@ -62,7 +62,10 @@ def sendInputAndCheck(binary, mutatedInput, lock):
     p.sendline(mutatedInput)
     p.proc.stdin.close()
 
-    exit_status = p.poll(block=True)
+    exit_status = None
+    while exit_status == None:
+        p.wait()
+        exit_status = p.returncode
     p.close()
 
     # After it has finished running, we check the exit status of the process.
@@ -122,7 +125,8 @@ def valGenerateTyped(val, i: int):
     return val
 
 
-def generateBadJson(size: int):
+def generateWeirdJson(size: int):
+    ''' Generate variable sized JSONs within JSON '''
     badJson = {}
 
     currJson = {}
@@ -135,4 +139,4 @@ def generateBadJson(size: int):
 
 
 if __name__ == "__main__":
-    print(generateBadJson(5))
+    print(generateWeirdJson(5))
