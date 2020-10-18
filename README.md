@@ -2,8 +2,6 @@
 
 Usage: `./fuzzer /path/to/binary /path/to/sampleinput`
 
-be careful of committing zIDs and stuff since it'll be public probably
-
 featuring:
 
 Wisley @Multifactored
