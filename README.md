@@ -1,9 +1,5 @@
 # COMP6447 Fuzzer Major Assignment
 
-=========================
-
-# TODO: xml3
-
 Usage: `./fuzzer /path/to/binary /path/to/sampleinput`
 
 be careful of committing zIDs and stuff since it'll be public probably
