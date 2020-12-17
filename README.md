@@ -1,5 +1,5 @@
 # COMP3900 Major Project | Binary Fuzzer
-> Developed by @Multifactored, @DionEarle, @jjamme, @mattimmanuel01
+Developed by @Multifactored, @DionEarle, @jjamme, @mattimmanuel01
 
 This program analyses and tests compiled binaries to determine if a possible vulnerability exists. It performs this through passing in malformed or abnormal input and testing if it crashes, before returning the malformed input used if a crash is made.
 
