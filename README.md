@@ -16,3 +16,12 @@ Usage: `./fuzzer /path/to/binary /path/to/sampleinput`
 ## Contact
 * Wisley Chau : multifactored@gmail.com
 >add more here
+
+## Brief Documentation
+
+/binaries - Contains the sample binaries we tested the project on, separated by language.
+
+/writeup - Contains the actual detailed documentation.
+
+fuzzer - The main python program.
+- type_checker.py - checks the type of the binary that's passed in, then redirects it to the appropriate handler
