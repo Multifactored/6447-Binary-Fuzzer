@@ -15,6 +15,7 @@ Usage: `./fuzzer /path/to/binary /path/to/sampleinput`
 
 ## Contact
 * Wisley Chau : multifactored@gmail.com
+* Frank Nguyen : fnguyen344@gmail.com
 >add more here
 
 ## Brief Documentation
